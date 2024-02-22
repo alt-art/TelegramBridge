@@ -33,11 +33,11 @@ public class TimeConverter {
         if (0 <= ticks && ticks < 12000) {
             emoji = "\uD83C\uDF05";
         } else if (12000 <= ticks && ticks < 13000) {
-            emoji = "\uD83C\uDF07🌇";
+            emoji = "\uD83C\uDF07";
         } else if (13000 <= ticks && ticks < 23000) {
             emoji = "\uD83C\uDF03";
         } else if (23000 <= ticks && ticks < 24000) {
-            emoji = "\uD83C\uDF05🌅";
+            emoji = "\uD83C\uDF05";
         }
         return emoji;
     }

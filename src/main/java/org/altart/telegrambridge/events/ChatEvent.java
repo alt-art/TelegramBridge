@@ -17,11 +17,13 @@ public class ChatEvent implements Listener {
         if (!event.getMessage().startsWith("/") && player.hasPermission(Permissions.SEND.getString()) && TelegramBridge.config.send_to_telegram) {
             String playerNick = player.getDisplayName();
             String message = event.getMessage().replaceAll("§.", "");
-            HashMap<String, String> values = new HashMap<>();
-            values.put("playername", playerNick);
-            values.put("message", message);
-            String text = Format.string(TelegramBridge.config.messages_format_telegram, values);
-            TelegramBridge.telegramBot.send(text);
+            if (!message.isEmpty()) {
+                HashMap<String, String> values = new HashMap<>();
+                values.put("playername", playerNick);
+                values.put("message", message);
+                String text = Format.string(TelegramBridge.config.messages_format_telegram, values);
+                TelegramBridge.telegramBot.send(text);
+            }
         }
     }
 }

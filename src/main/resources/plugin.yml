@@ -21,3 +21,20 @@ commands:
     usage: /tbmention <username> <message>
     permission: telegrambridge.commands.mention
     aliases: [tbm]
+
+permissions:
+    telegrambridge.commands.reload:
+        description: Allows the user to reload the TelegramBridge configuration
+        default: op
+    telegrambridge.commands.reply:
+        description: Allows the user to reply to a message in telegram chat
+        default: true
+    telegrambridge.commands.mention:
+        description: Allows the user to mention a user in a telegram chat
+        default: true
+    telegrambridge.commands.send:
+        description: Allows the user to send messages to telegram chat
+        default: true
+    telegrambridge.commands.receive:
+        description: Allows the user to receive messages from telegram chat
+        default: true

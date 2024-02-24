@@ -32,9 +32,9 @@ permissions:
     telegrambridge.commands.mention:
         description: Allows the user to mention a user in a telegram chat
         default: true
-    telegrambridge.commands.send:
+    telegrambridge.send:
         description: Allows the user to send messages to telegram chat
         default: true
-    telegrambridge.commands.receive:
+    telegrambridge.receive:
         description: Allows the user to receive messages from telegram chat
         default: true

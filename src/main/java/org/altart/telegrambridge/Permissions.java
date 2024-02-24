@@ -1,8 +1,7 @@
 package org.altart.telegrambridge;
 
 public enum Permissions {
-    RECEIVE("receive"),
-    SEND("send");
+    REPLY_COMMAND("commands.reply"), RECEIVE("receive"), SEND("send");
 
     private final String permission;
 

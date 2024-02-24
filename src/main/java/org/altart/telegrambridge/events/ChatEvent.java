@@ -21,7 +21,7 @@ public class ChatEvent implements Listener {
             values.put("playername", playerNick);
             values.put("message", message);
             String text = Format.string(TelegramBridge.config.messages_format_telegram, values);
-            TelegramBridge.sendTelegramMessage(text);
+            TelegramBridge.telegramBot.send(text);
         }
     }
 }

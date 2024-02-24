@@ -18,7 +18,7 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.send_to_telegram && TelegramBridge.config.log_join_and_leave_event) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.messages_format_join, "playername", playerNick);
-            TelegramBridge.sendTelegramMessage(message);
+            TelegramBridge.telegramBot.send(message);
         }
     }
 
@@ -27,7 +27,7 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.send_to_telegram && TelegramBridge.config.log_join_and_leave_event) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.messages_format_leave, "playername", playerNick);
-            TelegramBridge.sendTelegramMessage(message);
+            TelegramBridge.telegramBot.send(message);
         }
     }
 
@@ -40,7 +40,7 @@ public class GameEvent implements Listener {
             values.put("playername", playerNick);
             values.put("deathmessage", deathMessage);
             String message = Format.string(TelegramBridge.config.messages_format_death, values);
-            TelegramBridge.sendTelegramMessage(message);
+            TelegramBridge.telegramBot.send(message);
         }
     }
 
@@ -49,7 +49,7 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.send_to_telegram && TelegramBridge.config.log_sleep_event) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.messages_format_sleep, "playername", playerNick);
-            TelegramBridge.sendTelegramMessage(message);
+            TelegramBridge.telegramBot.send(message);
         }
     }
 }

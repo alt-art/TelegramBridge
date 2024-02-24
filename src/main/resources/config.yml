@@ -1,5 +1,7 @@
-bot_token: your_token
-chat_ids:
+bot_token: your_token # your bot token from @BotFather remember to disable privacy mode
+chats: # your chat list, you can add multiple chats use '-' to separate them
+  - id: # your chat id, you can get it from @ScanIDBot
+    thread: null # your thread id (optional) if you want to send messages to a specific thread. /setthread on telegram chat can be used to set the thread automatically
 send_to_chat: true
 send_to_telegram: true
 log_join_and_leave_event: true
@@ -11,7 +13,7 @@ messages:
   leave: 'Player %playername% left the game!'
   death: 'Player %playername% died! %deathmessage%'
   sleep: 'Player %playername% is sleeping!'
-  telegram: '[%playername%] %message%'
-  chat: '§7[§bTelegram§7] §f[%playername%] %message%'
+  telegram: '[%playername%]: %message%'
+  chat: '§7[§bTelegram§7] §f[%user%] %message%'
   time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
   online: 'There are %count% players online\n%players%'

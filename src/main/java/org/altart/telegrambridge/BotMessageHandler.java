@@ -4,18 +4,24 @@ import org.altart.telegrambridge.utils.Format;
 import org.altart.telegrambridge.utils.TimeConverter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 public class BotMessageHandler extends TelegramLongPollingBot {
+    private final Logger log = TelegramBridge.log;
     private final Config config;
     private final Plugin plugin;
     private static OnMessageCallback onMessageCallback;
@@ -28,14 +34,18 @@ public class BotMessageHandler extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        List<String> chatIds = config.chat_ids;
+        List<Config.Chats> chats = config.chats;
         if (!update.hasMessage() || !update.getMessage().hasText()) return;
         Message message = update.getMessage();
-        if (message.hasText() && chatIds.contains(message.getChatId().toString()) && !message.getText().startsWith("/")) {
+        if (message.getFrom().getIsBot()) return;
+        String messageChatId = message.getChatId().toString();
+        Integer messageId = message.getMessageId();
+        if (chats.stream().noneMatch(chat -> chat.id.equals(messageChatId))) return;
+        if (!message.getText().startsWith("/")) {
             onMessageCallback.onMessage(message);
         }
 
-        if (message.getText().startsWith("/time") && chatIds.contains(message.getChatId().toString())) {
+        if (message.getText().startsWith("/time")) {
             long ticks = plugin.getServer().getWorlds().get(0).getTime();
             String time = TimeConverter.ticksToTime(ticks);
             long fullTicks = plugin.getServer().getWorlds().get(0).getFullTime();
@@ -49,17 +59,27 @@ public class BotMessageHandler extends TelegramLongPollingBot {
             HashMap<String, String> values = makeTimeMap(time, emoji, day, month, year, month);
 
             String response = Format.string(config.messages_format_time, values);
-            sendMessage(response, message.getChatId().toString());
+            sendMessage(response, messageChatId, null, messageId);
         }
 
-        if (message.getText().startsWith("/online") && chatIds.contains(message.getChatId().toString())) {
+        if (message.getText().startsWith("/online")) {
             Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
             String playersNames = players.stream().map(Player::getDisplayName).collect(Collectors.joining("\n"));
             HashMap<String, String> values = new HashMap<>();
             values.put("players", playersNames);
             values.put("count", String.valueOf(players.size()));
             String response = Format.string(config.messages_format_online, values);
-            sendMessage(response, message.getChatId().toString());
+
+            sendMessage(response, messageChatId, null, messageId);
+        }
+
+        if (message.getText().startsWith("/setthread")) {
+            if (isAdmin(messageChatId, message.getFrom().getId())) {
+                sendMessage("You are not an admin", messageChatId, null, messageId);
+                return;
+            }
+            config.setThread(messageChatId, message.getMessageThreadId());
+            sendMessage("Thread set", messageChatId, null, messageId);
         }
     }
 
@@ -74,26 +94,45 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         return values;
     }
 
+    private boolean isAdmin(String chatId, long userId) {
+        GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
+        getChatAdministrators.setChatId(chatId);
+        try {
+            List<ChatMember> chatAdministrators = execute(getChatAdministrators);
+            return chatAdministrators.stream().anyMatch(chatMember -> chatMember.getUser().getId().equals(userId));
+        } catch (TelegramApiException e) {
+            log.severe("Error getting chat administrators: " + e.getMessage());
+            return false;
+        }
+    }
+
     @Override
     public String getBotUsername() {
         return "TelegramBridgeBot";
     }
 
-    public void sendMessage(String message, String chatId) {
+    public void sendMessage(String message, String chatId, @Nullable Integer threadId, @Nullable Integer replyMessageId) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
         sendMessage.setText(message);
+        sendMessage.setParseMode("HTML");
+        sendMessage.setChatId(chatId);
+        if (replyMessageId != null) {
+            sendMessage.setReplyToMessageId(replyMessageId);
+        }
+        if (threadId != null) {
+            sendMessage.setMessageThreadId(threadId);
+        }
         try {
             execute(sendMessage);
-        } catch (Exception e) {
-            System.out.println("Error sending message: " + e.getMessage());
+        } catch (TelegramApiException e) {
+            log.severe("Error sending message: " + e.getMessage());
         }
     }
 
     public void broadcastMessage(String message) {
-        List<String> chatIds = config.chat_ids;
-        for (String chatId : chatIds) {
-            sendMessage(message, chatId);
+        List<Config.Chats> chats = config.chats;
+        for (Config.Chats chat : chats) {
+            sendMessage(message, chat.id, chat.thread, null);
         }
     }
 

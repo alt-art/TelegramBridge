@@ -7,18 +7,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class ReplyCommand implements CommandExecutor {
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String _label, @NotNull String[] args) {
-        if (args.length < 2) {
+public class MentionCommand implements CommandExecutor {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (args.length < 1) {
             return false;
         }
-        String uuid = args[0];
-        String message = String.join(" ", args).substring(args[0].length() + 1);
+        String message = String.join(" ", args);
         String playerName = sender.getName();
         String text = Format.message(playerName, message);
-        TelegramBridge.telegramBot.reply(uuid, text);
+        TelegramBridge.telegramBot.send(text);
         return true;
     }
 }

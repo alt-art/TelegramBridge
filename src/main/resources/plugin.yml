@@ -9,6 +9,15 @@ website: altart.top
 commands:
   tbreload:
     description: Reloads the TelegramBridge configuration
-    usage: /tgreload
+    usage: /tbreload
     permission: telegrambridge.commands.reload
+  tbreply:
+    description: Reply using message_id to a message in telegram chat
+    usage: /tbreply <message_id> <message>
+    permission: telegrambridge.commands.reply
     aliases: [tbr]
+  tbmention:
+    description: Mention a user in a telegram chat
+    usage: /tbmention <username> <message>
+    permission: telegrambridge.commands.mention
+    aliases: [tbm]

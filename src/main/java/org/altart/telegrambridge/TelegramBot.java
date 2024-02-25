@@ -73,7 +73,7 @@ public class TelegramBot {
                 values.put("caption", caption);
                 values.put("type", determineMediaType(message));
                 String text = Format.string(TelegramBridge.config.messages_format_media, values);
-                player.spigot().sendMessage(new ComponentBuilder(text).create());
+                player.sendMessage(text);
             }
         }
     }

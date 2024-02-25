@@ -24,7 +24,8 @@ public class BotMessageHandler extends TelegramLongPollingBot {
     private final Logger log = TelegramBridge.log;
     private final Config config;
     private final Plugin plugin;
-    private static OnMessageCallback onMessageCallback;
+    private OnMessageCallback onMessageCallback;
+    private OnMediaCallback onMediaCallback;
 
     public BotMessageHandler(Plugin plugin) {
         super(Config.getInstance().bot_token);
@@ -35,16 +36,23 @@ public class BotMessageHandler extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         List<Config.Chats> chats = config.chats;
-        if (!update.hasMessage() || !update.getMessage().hasText()) return;
         Message message = update.getMessage();
-        if (message.getFrom().getIsBot()) return;
+        if (message == null) return;
         String messageChatId = message.getChatId().toString();
-        Integer messageId = message.getMessageId();
         if (chats.stream().noneMatch(chat -> chat.id.equals(messageChatId))) return;
+        if (message.getFrom().getIsBot()) return;
+
+        if (isMedia(message)) {
+            onMediaCallback.onMedia(message);
+        }
+
+        if (!message.hasText()) return;
+
         if (!message.getText().startsWith("/")) {
             onMessageCallback.onMessage(message);
         }
 
+        Integer messageId = message.getMessageId();
         if (message.getText().startsWith("/time")) {
             long ticks = plugin.getServer().getWorlds().get(0).getTime();
             String time = TimeConverter.ticksToTime(ticks);
@@ -106,6 +114,18 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         }
     }
 
+    private boolean isMedia(Message message) {
+        return message.hasPhoto()
+                || message.hasVideo()
+                || message.hasDocument()
+                || message.hasAudio()
+                || message.hasVoice()
+                || message.hasSticker()
+                || message.hasContact()
+                || message.hasLocation()
+                || message.hasPoll();
+    }
+
     @Override
     public String getBotUsername() {
         return "TelegramBridgeBot";
@@ -140,7 +160,15 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         onMessageCallback = callback;
     }
 
+    public void setOnMediaCallback(OnMediaCallback callback) {
+        onMediaCallback = callback;
+    }
+
     public interface OnMessageCallback {
         void onMessage(Message message);
+    }
+
+    public interface OnMediaCallback {
+        void onMedia(Message message);
     }
 }

@@ -8,12 +8,14 @@ log_join_and_leave_event: true
 log_death_event: true
 log_sleep_event: false
 months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+media_types: ['an image', 'a video', 'a document', 'an audio', 'a voice', 'a sticker', 'a contact', 'a location', 'a poll', 'a media']
 messages:
   join: 'Player %playername% joined the game!'
   leave: 'Player %playername% left the game!'
   death: 'Player %playername% died! %deathmessage%'
   sleep: 'Player %playername% is sleeping!'
   telegram: '[%playername%]: %message%'
+  media: '§7[§bTelegram§7] §f[%user%] sent %type%\n %caption%'
   chat: '§7[§bTelegram§7] §f[%user%] %message%'
   time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
   online: 'There are %count% players online\n%players%'

@@ -15,5 +15,6 @@ messages:
   sleep: 'Player %playername% is sleeping!'
   telegram: '[%playername%]: %message%'
   chat: '§7[§bTelegram§7] §f[%user%] %message%'
+  reply: '- §breply to §f%user%: %message%§r -\n'
   time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
   online: 'There are %count% players online\n%players%'

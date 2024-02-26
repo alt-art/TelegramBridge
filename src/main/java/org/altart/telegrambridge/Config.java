@@ -24,10 +24,12 @@ public class Config {
     public String messages_format_death = null;
     public String messages_format_sleep = null;
     public String messages_format_telegram = null;
+    public String messages_format_media = null;
     public String messages_format_chat = null;
     public String messages_format_online = null;
     public String messages_format_time = null;
     public List<String> months = null;
+    public List<String> media_types = null;
 
     private final Plugin plugin;
     private static Config instance = null;
@@ -56,10 +58,12 @@ public class Config {
         messages_format_death = config.getString("messages.death");
         messages_format_sleep = config.getString("messages.sleep");
         messages_format_telegram = config.getString("messages.telegram");
+        messages_format_media = config.getString("messages.media");
         messages_format_chat = config.getString("messages.chat");
         messages_format_online = config.getString("messages.online");
         messages_format_time = config.getString("messages.time");
         months = config.getStringList("months");
+        media_types = config.getStringList("media_types");
     }
 
     private List<Chats> getChats(List<Map<?, ?>> chats_map) {
@@ -109,10 +113,12 @@ public class Config {
         config.set("messages.death", messages_format_death);
         config.set("messages.sleep", messages_format_sleep);
         config.set("messages.telegram", messages_format_telegram);
+        config.set("messages.media", messages_format_media);
         config.set("messages.chat", messages_format_chat);
         config.set("messages.online", messages_format_online);
         config.set("messages.time", messages_format_time);
         config.set("months", months);
+        config.set("media_types", media_types);
         try {
             config.save(configFile);
         } catch (Exception e) {

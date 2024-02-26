@@ -35,6 +35,7 @@ public class TelegramBot {
             botSession = telegramBotsApi.registerBot(botMessageHandler);
             TelegramBridge.log.info("Telegram bot registered");
             botMessageHandler.setOnMessageCallback(this::onMessage);
+            botMessageHandler.setOnMediaCallback(this::onMedia);
         } catch (Exception e) {
             TelegramBridge.log.severe("Error registering bot: " + e.getMessage());
         }
@@ -58,6 +59,36 @@ public class TelegramBot {
         String chatId = messageInfo.chatId;
         Integer messageId = messageInfo.messageId;
         botMessageHandler.sendMessage(text, chatId, null, messageId);
+    }
+
+    public void onMedia(Message message) {
+        String username = message.getFrom().getUserName();
+        String caption = message.getCaption();
+        caption = caption == null ? "" : caption;
+        if (!TelegramBridge.config.send_to_chat) return;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasPermission(Permissions.RECEIVE.getString())) {
+                HashMap<String, String> values = new HashMap<>();
+                values.put("user", username);
+                values.put("caption", caption);
+                values.put("type", determineMediaType(message));
+                String text = Format.string(TelegramBridge.config.messages_format_media, values);
+                player.sendMessage(text);
+            }
+        }
+    }
+
+    private String determineMediaType(Message message) {
+        if (message.hasPhoto()) return TelegramBridge.config.media_types.get(0);
+        if (message.hasVideo()) return TelegramBridge.config.media_types.get(1);
+        if (message.hasDocument()) return TelegramBridge.config.media_types.get(2);
+        if (message.hasAudio()) return TelegramBridge.config.media_types.get(3);
+        if (message.hasVoice()) return TelegramBridge.config.media_types.get(4);
+        if (message.hasSticker()) return TelegramBridge.config.media_types.get(5);
+        if (message.hasContact()) return TelegramBridge.config.media_types.get(6);
+        if (message.hasLocation()) return TelegramBridge.config.media_types.get(7);
+        if (message.hasPoll()) return TelegramBridge.config.media_types.get(8);
+        return TelegramBridge.config.media_types.get(9);
     }
 
     public void onMessage(Message message) {

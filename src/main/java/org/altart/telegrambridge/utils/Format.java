@@ -22,10 +22,17 @@ public class Format {
         return result;
     }
 
-    public static String message(String playerName, String message) {
+    public static String chatMessage(String playerName, String message) {
         HashMap<String, String> values = new HashMap<>();
         values.put("playername", playerName);
         values.put("message", message);
         return string(TelegramBridge.config.messages_format_telegram, values);
+    }
+
+    public static String telegramMessage(String playerName, String message) {
+        HashMap<String, String> values = new HashMap<>();
+        values.put("user", playerName);
+        values.put("message", message);
+        return string(TelegramBridge.config.messages_format_chat, values);
     }
 }

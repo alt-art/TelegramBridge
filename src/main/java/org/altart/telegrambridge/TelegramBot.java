@@ -59,6 +59,17 @@ public class TelegramBot {
         String chatId = messageInfo.chatId;
         Integer messageId = messageInfo.messageId;
         botMessageHandler.sendMessage(text, chatId, null, messageId);
+        String username = messageInfo.username;
+        String message = messageInfo.message;
+        ComponentBuilder componentBuilder = new ComponentBuilder();
+        HashMap<String, String> values = makeMessageMap(username, normalizeReply(message));
+        componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, values)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
+        componentBuilder.append(text);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.hasPermission(Permissions.RECEIVE.getString())) {
+                player.spigot().sendMessage(componentBuilder.create());
+            }
+        }
     }
 
     public void onMedia(Message message) {
@@ -93,15 +104,20 @@ public class TelegramBot {
 
     public void onMessage(Message message) {
         String username = message.getFrom().getUserName();
-        telegramUsers.add("@" + message.getFrom().getUserName());
+        telegramUsers.add("@" + username);
         if (!TelegramBridge.config.send_to_chat) return;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                HashMap<String, String> values = new HashMap<>();
-                values.put("user", username);
-                values.put("message", message.getText());
-                String text = Format.string(TelegramBridge.config.messages_format_chat, values);
-                ComponentBuilder componentBuilder = new ComponentBuilder(text);
+                HashMap<String, String> values = makeMessageMap(username, message.getText());
+                Message replyToMessage = message.getReplyToMessage();
+                ComponentBuilder componentBuilder = new ComponentBuilder();
+                if (replyToMessage != null && replyToMessage.hasText()) {
+                    String replyToUsername = replyToMessage.getFrom().getUserName();
+                    String replyToText = replyToMessage.getText();
+                    HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));
+                    componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, replyValues)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
+                }
+                componentBuilder.append(Format.string(TelegramBridge.config.messages_format_chat, values));
                 if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
                     Integer messageId = message.getMessageId();
                     String chatId = message.getChatId().toString();
@@ -109,7 +125,7 @@ public class TelegramBot {
                     while (messagesInfo.containsKey(uuid)) {
                         uuid = RandomStringUtils.random(8, true, true);
                     }
-                    messagesInfo.put(uuid, new MessageInfo(chatId, messageId));
+                    messagesInfo.put(uuid, new MessageInfo(chatId, messageId, message.getText(), username));
                     componentBuilder.append(" [Reply]").color(ChatColor.AQUA).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " ")).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
                 }
                 player.spigot().sendMessage(componentBuilder.create());
@@ -125,13 +141,28 @@ public class TelegramBot {
         return new ArrayList<>(telegramUsers);
     }
 
+    private String normalizeReply(String text) {
+        return text.replace("\n", " ").substring(0, Math.min(text.length(), 20)) + "...";
+    }
+
+    private HashMap<String, String> makeMessageMap(String user, String message) {
+        HashMap<String, String> values = new HashMap<>();
+        values.put("user", user);
+        values.put("message", message);
+        return values;
+    }
+
     private static class MessageInfo {
         public String chatId;
         public Integer messageId;
+        public String message;
+        public String username;
 
-        public MessageInfo(String chatId, Integer messageId) {
+        public MessageInfo(String chatId, Integer messageId, String message, String username) {
             this.chatId = chatId;
             this.messageId = messageId;
+            this.message = message;
+            this.username = username;
         }
     }
 }

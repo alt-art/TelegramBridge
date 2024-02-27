@@ -26,6 +26,7 @@ public class Config {
     public String messages_format_telegram = null;
     public String messages_format_media = null;
     public String messages_format_chat = null;
+    public String messages_format_reply = null;
     public String messages_format_online = null;
     public String messages_format_time = null;
     public List<String> months = null;
@@ -60,6 +61,7 @@ public class Config {
         messages_format_telegram = config.getString("messages.telegram");
         messages_format_media = config.getString("messages.media");
         messages_format_chat = config.getString("messages.chat");
+        messages_format_reply = config.getString("messages.reply");
         messages_format_online = config.getString("messages.online");
         messages_format_time = config.getString("messages.time");
         months = config.getStringList("months");
@@ -115,6 +117,7 @@ public class Config {
         config.set("messages.telegram", messages_format_telegram);
         config.set("messages.media", messages_format_media);
         config.set("messages.chat", messages_format_chat);
+        config.set("messages.reply", messages_format_reply);
         config.set("messages.online", messages_format_online);
         config.set("messages.time", messages_format_time);
         config.set("months", months);

@@ -17,7 +17,7 @@ public class ReplyCommand implements CommandExecutor {
         String uuid = args[0];
         String message = String.join(" ", args).substring(args[0].length() + 1);
         String playerName = sender.getName();
-        String text = Format.message(playerName, message);
+        String text = Format.chatMessage(playerName, message);
         TelegramBridge.telegramBot.reply(uuid, text);
         return true;
     }

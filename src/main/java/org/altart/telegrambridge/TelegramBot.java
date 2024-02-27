@@ -80,7 +80,7 @@ public class TelegramBot {
                 HashMap<String, String> values = makeMessageMap(username, message.getText());
                 Message replyToMessage = message.getReplyToMessage();
                 ComponentBuilder componentBuilder = new ComponentBuilder();
-                if (replyToMessage != null) {
+                if (replyToMessage != null && replyToMessage.hasText()) {
                     String replyToUsername = replyToMessage.getFrom().getUserName();
                     String replyToText = replyToMessage.getText();
                     HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));

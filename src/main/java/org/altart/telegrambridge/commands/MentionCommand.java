@@ -1,10 +1,9 @@
 package org.altart.telegrambridge.commands;
 
-import org.altart.telegrambridge.TelegramBridge;
-import org.altart.telegrambridge.utils.Format;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class MentionCommand implements CommandExecutor {
@@ -12,10 +11,11 @@ public class MentionCommand implements CommandExecutor {
         if (args.length < 1) {
             return false;
         }
-        String message = String.join(" ", args);
-        String playerName = sender.getName();
-        String text = Format.message(playerName, message);
-        TelegramBridge.telegramBot.send(text);
-        return true;
+        if (sender instanceof Player player) {
+            String message = String.join(" ", args);
+            player.chat(message);
+            return true;
+        }
+        return false;
     }
 }

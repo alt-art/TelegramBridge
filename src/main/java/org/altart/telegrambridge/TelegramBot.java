@@ -64,6 +64,7 @@ public class TelegramBot {
         ComponentBuilder componentBuilder = new ComponentBuilder();
         HashMap<String, String> values = makeMessageMap(username, normalizeReply(message));
         componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, values)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
+        componentBuilder.reset();
         componentBuilder.append(text);
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
@@ -117,6 +118,7 @@ public class TelegramBot {
                     HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));
                     componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, replyValues)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
                 }
+                componentBuilder.reset();
                 componentBuilder.append(Format.string(TelegramBridge.config.messages_format_chat, values));
                 if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
                     Integer messageId = message.getMessageId();

@@ -63,9 +63,9 @@ public class TelegramBot {
         String message = messageInfo.message;
         ComponentBuilder componentBuilder = new ComponentBuilder();
         HashMap<String, String> values = makeMessageMap(username, normalizeReply(message));
-        componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, values)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
-        componentBuilder.reset();
-        componentBuilder.append(text);
+        componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, values));
+        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
+        componentBuilder.append(text, ComponentBuilder.FormatRetention.NONE);
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
                 player.spigot().sendMessage(componentBuilder.create());
@@ -116,10 +116,10 @@ public class TelegramBot {
                     String replyToUsername = replyToMessage.getFrom().getUserName();
                     String replyToText = replyToMessage.getText();
                     HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));
-                    componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, replyValues)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
+                    componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, replyValues));
+                    componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
                 }
-                componentBuilder.reset();
-                componentBuilder.append(Format.string(TelegramBridge.config.messages_format_chat, values));
+                componentBuilder.append(Format.string(TelegramBridge.config.messages_format_chat, values), ComponentBuilder.FormatRetention.NONE);
                 if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
                     Integer messageId = message.getMessageId();
                     String chatId = message.getChatId().toString();

@@ -74,10 +74,9 @@ public class BotMessageHandler extends TelegramLongPollingBot {
             Collection<? extends Player> players = plugin.getServer().getOnlinePlayers();
             String playersNames = players.stream().map(Player::getDisplayName).collect(Collectors.joining("\n"));
             HashMap<String, String> values = new HashMap<>();
-            values.put("players", playersNames);
+            values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
             values.put("count", String.valueOf(players.size()));
             String response = Format.string(config.messages_format_online, values);
-
             sendMessage(response, messageChatId, null, messageId);
         }
 

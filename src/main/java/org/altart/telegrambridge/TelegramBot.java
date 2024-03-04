@@ -76,7 +76,7 @@ public class TelegramBot {
     public void onMedia(Message message) {
         String username = message.getFrom().getUserName();
         String caption = message.getCaption();
-        caption = caption == null ? "" : caption;
+        caption = caption == null ? "" : "\n" + caption;
         if (!TelegramBridge.config.send_to_chat) return;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permissions.RECEIVE.getString())) {

@@ -18,6 +18,7 @@ jobs:
           uses: actions/setup-java@v4
           with:
             java-version: '17'
+            distribution: 'openjdk'
         - name: Build with Gradle
           run: ./gradlew shadowJar
         - name: Release .jar

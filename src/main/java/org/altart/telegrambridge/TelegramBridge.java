@@ -23,7 +23,7 @@ public final class TelegramBridge extends JavaPlugin {
     public void onEnable() {
         log = getLogger();
         config = new Config(this);
-        if (Objects.equals(config.bot_token, "your_token")) {
+        if (Objects.equals(config.getBotToken(), "your_token")) {
             log.severe("Please set your bot token in the config file!");
             return;
         }

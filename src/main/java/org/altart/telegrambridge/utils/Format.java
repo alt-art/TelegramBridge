@@ -26,6 +26,6 @@ public class Format {
         HashMap<String, String> values = new HashMap<>();
         values.put("playername", playerName);
         values.put("message", message);
-        return string(TelegramBridge.config.messages_format_telegram, values);
+        return string(TelegramBridge.config.getMessagesFormatTelegram(), values);
     }
 }

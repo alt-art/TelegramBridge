@@ -28,14 +28,14 @@ public class BotMessageHandler extends TelegramLongPollingBot {
     private OnMediaCallback onMediaCallback;
 
     public BotMessageHandler(Plugin plugin) {
-        super(Config.getInstance().bot_token);
+        super(Config.getInstance().getBotToken());
         this.config = Config.getInstance();
         this.plugin = plugin;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        List<Config.Chats> chats = config.chats;
+        List<Config.Chat> chats = config.getChats();
         Message message = update.getMessage();
         if (message == null) return;
         String messageChatId = message.getChatId().toString();
@@ -66,7 +66,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
 
             HashMap<String, String> values = makeTimeMap(time, emoji, day, month, year, month);
 
-            String response = Format.string(config.messages_format_time, values);
+            String response = Format.string(config.getMessagesFormatTime(), values);
             sendMessage(response, messageChatId, null, messageId);
         }
 
@@ -76,7 +76,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
             HashMap<String, String> values = new HashMap<>();
             values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
             values.put("count", String.valueOf(players.size()));
-            String response = Format.string(config.messages_format_online, values);
+            String response = Format.string(config.getMessagesFormatOnline(), values);
             sendMessage(response, messageChatId, null, messageId);
         }
 
@@ -95,7 +95,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         values.put("time", time);
         values.put("emoji", emoji);
         values.put("day", String.valueOf(day));
-        values.put("month", config.months.get(month));
+        values.put("month", config.getMonths().get(month));
         values.put("year", String.valueOf(year));
         values.put("month_number", String.valueOf(month_number + 1));
         return values;
@@ -149,8 +149,8 @@ public class BotMessageHandler extends TelegramLongPollingBot {
     }
 
     public void broadcastMessage(String message) {
-        List<Config.Chats> chats = config.chats;
-        for (Config.Chats chat : chats) {
+        List<Config.Chat> chats = config.getChats();
+        for (Config.Chat chat : chats) {
             sendMessage(message, chat.id, chat.thread, null);
         }
     }

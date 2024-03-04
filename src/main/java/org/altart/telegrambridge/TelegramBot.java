@@ -63,7 +63,7 @@ public class TelegramBot {
         String message = messageInfo.message;
         ComponentBuilder componentBuilder = new ComponentBuilder();
         HashMap<String, String> values = makeMessageMap(username, normalizeReply(message));
-        componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, values));
+        componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatReply(), values));
         componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
         componentBuilder.append(text, ComponentBuilder.FormatRetention.NONE);
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -77,60 +77,62 @@ public class TelegramBot {
         String username = message.getFrom().getUserName();
         String caption = message.getCaption();
         caption = caption == null ? "" : "\n" + caption;
-        if (!TelegramBridge.config.send_to_chat) return;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                HashMap<String, String> values = new HashMap<>();
-                values.put("user", username);
-                values.put("caption", caption);
-                values.put("type", determineMediaType(message));
-                String text = Format.string(TelegramBridge.config.messages_format_media, values);
-                player.sendMessage(text);
+        if (TelegramBridge.config.getSendToChat()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission(Permissions.RECEIVE.getString())) {
+                    HashMap<String, String> values = new HashMap<>();
+                    values.put("user", username);
+                    values.put("caption", caption);
+                    values.put("type", determineMediaType(message));
+                    String text = Format.string(TelegramBridge.config.getMessagesFormatMedia(), values);
+                    player.sendMessage(text);
+                }
             }
         }
     }
 
     private String determineMediaType(Message message) {
-        if (message.hasPhoto()) return TelegramBridge.config.media_types.get(0);
-        if (message.hasVideo()) return TelegramBridge.config.media_types.get(1);
-        if (message.hasDocument()) return TelegramBridge.config.media_types.get(2);
-        if (message.hasAudio()) return TelegramBridge.config.media_types.get(3);
-        if (message.hasVoice()) return TelegramBridge.config.media_types.get(4);
-        if (message.hasSticker()) return TelegramBridge.config.media_types.get(5);
-        if (message.hasContact()) return TelegramBridge.config.media_types.get(6);
-        if (message.hasLocation()) return TelegramBridge.config.media_types.get(7);
-        if (message.hasPoll()) return TelegramBridge.config.media_types.get(8);
-        return TelegramBridge.config.media_types.get(9);
+        if (message.hasPhoto()) return TelegramBridge.config.getMediaTypes().get(0);
+        if (message.hasVideo()) return TelegramBridge.config.getMediaTypes().get(1);
+        if (message.hasDocument()) return TelegramBridge.config.getMediaTypes().get(2);
+        if (message.hasAudio()) return TelegramBridge.config.getMediaTypes().get(3);
+        if (message.hasVoice()) return TelegramBridge.config.getMediaTypes().get(4);
+        if (message.hasSticker()) return TelegramBridge.config.getMediaTypes().get(5);
+        if (message.hasContact()) return TelegramBridge.config.getMediaTypes().get(6);
+        if (message.hasLocation()) return TelegramBridge.config.getMediaTypes().get(7);
+        if (message.hasPoll()) return TelegramBridge.config.getMediaTypes().get(8);
+        return TelegramBridge.config.getMediaTypes().get(9);
     }
 
     public void onMessage(Message message) {
         String username = message.getFrom().getUserName();
         telegramUsers.add("@" + username);
-        if (!TelegramBridge.config.send_to_chat) return;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                HashMap<String, String> values = makeMessageMap(username, message.getText());
-                Message replyToMessage = message.getReplyToMessage();
-                ComponentBuilder componentBuilder = new ComponentBuilder();
-                if (replyToMessage != null && replyToMessage.hasText()) {
-                    String replyToUsername = replyToMessage.getFrom().getUserName();
-                    String replyToText = replyToMessage.getText();
-                    HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));
-                    componentBuilder.append(Format.string(TelegramBridge.config.messages_format_reply, replyValues));
-                    componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
-                }
-                componentBuilder.append(Format.string(TelegramBridge.config.messages_format_chat, values), ComponentBuilder.FormatRetention.NONE);
-                if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
-                    Integer messageId = message.getMessageId();
-                    String chatId = message.getChatId().toString();
-                    String uuid = RandomStringUtils.random(8, true, true);
-                    while (messagesInfo.containsKey(uuid)) {
-                        uuid = RandomStringUtils.random(8, true, true);
+        if (TelegramBridge.config.getSendToChat()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission(Permissions.RECEIVE.getString())) {
+                    HashMap<String, String> values = makeMessageMap(username, message.getText());
+                    Message replyToMessage = message.getReplyToMessage();
+                    ComponentBuilder componentBuilder = new ComponentBuilder();
+                    if (replyToMessage != null && replyToMessage.hasText()) {
+                        String replyToUsername = replyToMessage.getFrom().getUserName();
+                        String replyToText = replyToMessage.getText();
+                        HashMap<String, String> replyValues = makeMessageMap(replyToUsername, normalizeReply(replyToText));
+                        componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyValues));
+                        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
                     }
-                    messagesInfo.put(uuid, new MessageInfo(chatId, messageId, message.getText(), username));
-                    componentBuilder.append(" [Reply]").color(ChatColor.AQUA).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " ")).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
+                    componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatChat(), values), ComponentBuilder.FormatRetention.NONE);
+                    if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
+                        Integer messageId = message.getMessageId();
+                        String chatId = message.getChatId().toString();
+                        String uuid = RandomStringUtils.random(8, true, true);
+                        while (messagesInfo.containsKey(uuid)) {
+                            uuid = RandomStringUtils.random(8, true, true);
+                        }
+                        messagesInfo.put(uuid, new MessageInfo(chatId, messageId, message.getText(), username));
+                        componentBuilder.append(" [Reply]").color(ChatColor.AQUA).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " ")).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
+                    }
+                    player.spigot().sendMessage(componentBuilder.create());
                 }
-                player.spigot().sendMessage(componentBuilder.create());
             }
         }
     }

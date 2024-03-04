@@ -114,6 +114,4 @@ gradle-app.setting
 # Common working directory
 run/
 
-# Gradle
-gradlew
-gradlew.bat
+!gradle-wrapper.jar

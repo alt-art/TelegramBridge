@@ -10,6 +10,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.generics.BotSession;
@@ -27,6 +28,7 @@ public class TelegramBot {
         }
     };
     private final Set<String> telegramUsers = new HashSet<>();
+    Set<String> players = new HashSet<>();
 
     public TelegramBot(Plugin plugin) {
         try {
@@ -36,6 +38,7 @@ public class TelegramBot {
             TelegramBridge.log.info("Telegram bot registered");
             botMessageHandler.setOnMessageCallback(this::onMessage);
             botMessageHandler.setOnMediaCallback(this::onMedia);
+            updatePinnedMessage();
         } catch (Exception e) {
             TelegramBridge.log.severe("Error registering bot: " + e.getMessage());
         }
@@ -135,6 +138,55 @@ public class TelegramBot {
                 }
             }
         }
+    }
+
+    public void addPlayer(String player) {
+        players.add(player);
+        updatePinnedMessage();
+    }
+
+    public void removePlayer(String player) {
+        players.remove(player);
+        updatePinnedMessage();
+    }
+
+    private void updatePinnedMessage() {
+        List<Config.Chat> chats = TelegramBridge.config.getChats();
+        for (Config.Chat chat : chats) {
+            if (chat.pinnedMessageId != null) {
+                setPinMessage(chat.id, chat.pinnedMessageId, chat.thread);
+            }
+        }
+    }
+
+    public void setPinMessage(String chatId, @Nullable Integer id, @Nullable Integer threadId) {
+        Integer messageId = id;
+        if (id == null) {
+            messageId = botMessageHandler.sendMessage(buildPinMessage(), chatId, threadId, null).getMessageId();
+        } else {
+            botMessageHandler.editMessage(buildPinMessage(), chatId, messageId);
+        }
+        botMessageHandler.pinMessage(chatId, messageId);
+        if (messageId != null) {
+            TelegramBridge.config.setPinnedMessageId(chatId, messageId);
+        }
+    }
+
+    public void unsetPinMessage(String chatId) {
+        for (Config.Chat chat : TelegramBridge.config.getChats()) {
+            if (chat.id.equals(chatId)) {
+                TelegramBridge.config.setPinnedMessageId(chatId, null);
+                botMessageHandler.unpinMessage(chatId, chat.pinnedMessageId);
+            }
+        }
+    }
+
+    private String buildPinMessage() {
+        String playersNames = String.join("\n", players);
+        HashMap<String, String> values = new HashMap<>();
+        values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
+        values.put("count", String.valueOf(players.size()));
+        return Format.string(TelegramBridge.config.getMessagesFormatPinned(), values);
     }
 
     public void stop() {

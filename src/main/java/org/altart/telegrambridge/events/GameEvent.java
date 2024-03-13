@@ -19,6 +19,7 @@ public class GameEvent implements Listener {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.getMessagesFormatJoin(), "playername", playerNick);
             TelegramBridge.telegramBot.send(message);
+            TelegramBridge.telegramBot.addPlayer(event.getPlayer().getDisplayName());
         }
     }
 
@@ -28,6 +29,7 @@ public class GameEvent implements Listener {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.getMessagesFormatLeave(), "playername", playerNick);
             TelegramBridge.telegramBot.send(message);
+            TelegramBridge.telegramBot.removePlayer(event.getPlayer().getDisplayName());
         }
     }
 

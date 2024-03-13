@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +37,11 @@ public class Config {
 
     private void saveValue(String key, Object value) {
         File configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/config.yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         config.set(key, value);
         try {
             config.save(configFile);
         } catch (Exception e) {
-            System.out.println("Error saving config: " + e.getMessage());
+            TelegramBridge.log.severe("Error saving config: " + e.getMessage());
         }
     }
 
@@ -50,11 +50,25 @@ public class Config {
         for (Chat chat : chats) {
             if (chat.id.equals(chatId)) {
                 chat.thread = threadId;
+                saveValue("chats", Chat.chatsToMaps(chats));
                 return;
             }
         }
-        chats.add(new Chat(chatId, threadId));
-        saveValue("chats", chats);
+        chats.add(new Chat(chatId, threadId, null));
+        saveValue("chats", Chat.chatsToMaps(chats));
+    }
+
+    public void setPinnedMessageId(String chatId, Integer messageId) {
+        List<Chat> chats = getChats();
+        for (Chat chat : chats) {
+            if (chat.id.equals(chatId)) {
+                chat.pinnedMessageId = messageId;
+                saveValue("chats", Chat.chatsToMaps(chats));
+                return;
+            }
+        }
+        chats.add(new Chat(chatId, null, messageId));
+        saveValue("chats", Chat.chatsToMaps(chats));
     }
 
     public String getBotToken() {
@@ -124,6 +138,9 @@ public class Config {
     public String getMessagesFormatTime() {
         return config.getString("messages.time");
     }
+    public String getMessagesFormatPinned() {
+        return config.getString("messages.pinned");
+    }
 
     public List<String> getMonths() {
         return config.getStringList("months");
@@ -139,9 +156,13 @@ public class Config {
         @Nullable
         public Integer thread;
 
-        public Chat(String id, @Nullable Integer thread) {
+        @Nullable
+        public Integer pinnedMessageId;
+
+        public Chat(String id, @Nullable Integer thread, @Nullable Integer pinnedMessageId) {
             this.id = id;
             this.thread = thread;
+            this.pinnedMessageId = pinnedMessageId;
         }
 
         public static List<Chat> chatsFrom(List<Map<?, ?>> chats_map) {
@@ -149,9 +170,22 @@ public class Config {
             for (Map<?, ?> chat : chats_map) {
                 String id = (String) chat.get("id");
                 Integer thread = (Integer) chat.get("thread");
-                chats.add(new Chat(id, thread));
+                Integer pinnedMessageId = (Integer) chat.get("pinnedMessageId");
+                chats.add(new Chat(id, thread, pinnedMessageId));
             }
             return chats;
+        }
+
+        public static List<Map<String, Object>> chatsToMaps(List<Chat> chats) {
+            List<Map<String, Object>> chats_map = new ArrayList<>();
+            for (Chat chat : chats) {
+                Map<String, Object> chat_map = new HashMap<>();
+                chat_map.put("id", chat.id);
+                chat_map.put("thread", chat.thread);
+                chat_map.put("pinnedMessageId", chat.pinnedMessageId);
+                chats_map.add(chat_map);
+            }
+            return chats_map;
         }
     }
 }

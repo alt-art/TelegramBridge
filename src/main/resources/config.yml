@@ -20,3 +20,4 @@ messages:
   reply: '- §breply to §7%user%: %message%§r -\n'
   time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
   online: 'There are %count% players online%players%'
+  pinned: 'Hey welcome to the chat!\nThere are %count% players online%players%'

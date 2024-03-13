@@ -7,15 +7,16 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
             int year = daysMonthsYears[2];
             String emoji = TimeConverter.getTimeCycleEmoji(ticks);
 
-            HashMap<String, String> values = makeTimeMap(time, emoji, day, month, year, month);
+            HashMap<String, String> values = makeTimeMap(time, emoji, day, month, year);
 
             String response = Format.string(config.getMessagesFormatTime(), values);
             sendMessage(response, messageChatId, null, messageId);
@@ -81,32 +82,48 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         }
 
         if (message.getText().startsWith("/setthread")) {
-            if (isAdmin(messageChatId, message.getFrom().getId())) {
+            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
                 sendMessage("You are not an admin", messageChatId, null, messageId);
                 return;
             }
             config.setThread(messageChatId, message.getMessageThreadId());
             sendMessage("Thread set", messageChatId, null, messageId);
         }
+
+        if (message.getText().startsWith("/setpin")) {
+            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
+                sendMessage("You are not an admin", messageChatId, null, messageId);
+                return;
+            }
+            TelegramBridge.telegramBot.setPinMessage(messageChatId, null, message.getMessageThreadId());
+        }
+
+        if (message.getText().startsWith("/unsetpin")) {
+            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
+                sendMessage("You are not an admin", messageChatId, null, messageId);
+                return;
+            }
+            TelegramBridge.telegramBot.unsetPinMessage(messageChatId);
+        }
     }
 
-    public HashMap<String, String> makeTimeMap(String time, String emoji, int day, int month, int year, int month_number) {
+    public HashMap<String, String> makeTimeMap(String time, String emoji, int day, int month, int year) {
         HashMap<String, String> values = new HashMap<>();
         values.put("time", time);
         values.put("emoji", emoji);
         values.put("day", String.valueOf(day));
         values.put("month", config.getMonths().get(month));
         values.put("year", String.valueOf(year));
-        values.put("month_number", String.valueOf(month_number + 1));
+        values.put("month_number", String.valueOf(month + 1));
         return values;
     }
 
-    private boolean isAdmin(String chatId, long userId) {
+    private boolean isAdmin(String chatId, String userName) {
         GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
         getChatAdministrators.setChatId(chatId);
         try {
             List<ChatMember> chatAdministrators = execute(getChatAdministrators);
-            return chatAdministrators.stream().anyMatch(chatMember -> chatMember.getUser().getId().equals(userId));
+            return chatAdministrators.stream().anyMatch(chatMember -> chatMember.getUser().getUserName().equals(userName));
         } catch (TelegramApiException e) {
             log.severe("Error getting chat administrators: " + e.getMessage());
             return false;
@@ -130,7 +147,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         return "TelegramBridgeBot";
     }
 
-    public void sendMessage(String message, String chatId, @Nullable Integer threadId, @Nullable Integer replyMessageId) {
+    public Message sendMessage(String message, String chatId, @Nullable Integer threadId, @Nullable Integer replyMessageId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(message);
         sendMessage.setParseMode("HTML");
@@ -142,9 +159,10 @@ public class BotMessageHandler extends TelegramLongPollingBot {
             sendMessage.setMessageThreadId(threadId);
         }
         try {
-            execute(sendMessage);
+            return execute(sendMessage);
         } catch (TelegramApiException e) {
             log.severe("Error sending message: " + e.getMessage());
+            return null;
         }
     }
 
@@ -152,6 +170,35 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         List<Config.Chat> chats = config.getChats();
         for (Config.Chat chat : chats) {
             sendMessage(message, chat.id, chat.thread, null);
+        }
+    }
+
+    public void pinMessage(String chatId, Integer messageId) {
+        try {
+            execute(new PinChatMessage(chatId, messageId));
+        } catch (TelegramApiException e) {
+            log.severe("Error pinning message: " + e.getMessage());
+        }
+    }
+
+    public void unpinMessage(String chatId, Integer messageId) {
+        try {
+            execute(new UnpinChatMessage(chatId, messageId));
+        } catch (TelegramApiException e) {
+            log.severe("Error unpinning message: " + e.getMessage());
+        }
+    }
+
+    public void editMessage(String message, String chatId, Integer messageId) {
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setText(message);
+        editMessageText.setChatId(chatId);
+        editMessageText.setMessageId(messageId);
+        editMessageText.setParseMode("HTML");
+        try {
+            execute(editMessageText);
+        } catch (TelegramApiException e) {
+            log.severe("Error editing message: " + e.getMessage());
         }
     }
 

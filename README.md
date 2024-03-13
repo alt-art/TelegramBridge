@@ -53,6 +53,8 @@ messages:
 - `/setthread` - When using threads, this command will set witch thread the events will be sent to
 - `/setpin` - Send a message to the chat and pin it which will show dynamically the online players (bot needs to have pin permission) (beta)
 - `/unsetpin` - Unpin the message that was pinned by `/setpin` (bot needs to have pin permission) (beta)
+- `/online` - Show the online players on the chat
+- `/time` - Show the server time and date
 
 ## Minecraft Commands
 

@@ -45,4 +45,16 @@ messages:
   reply: '- §breply to §7%user%: %message%§r -\n'
   time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
   online: 'There are %count% players online\n%players%'
+  pinned: 'Hey welcome to the chat!\nThere are %count% players online%players%'
 ```
+
+## Telegram Commands
+
+- `/setthread` - When using threads, this command will set witch thread the events will be sent to
+- `/setpin` - Send a message to the chat and pin it which will show dynamically the online players (bot needs to have pin permission) (beta)
+- `/unsetpin` - Unpin the message that was pinned by `/setpin` (bot needs to have pin permission) (beta)
+
+## Minecraft Commands
+
+- `/tbreload` - Reload the TelegramBridge configuration file
+- `/tbmention <user> <message>` alias `/tbm` - Auto complete on users from telegram to mention them

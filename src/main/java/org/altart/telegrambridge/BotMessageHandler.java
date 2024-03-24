@@ -82,7 +82,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         }
 
         if (message.getText().startsWith("/setthread")) {
-            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
+            if (!isAdmin(messageChatId, message.getFrom().getId())) {
                 sendMessage("You are not an admin", messageChatId, null, messageId);
                 return;
             }
@@ -91,7 +91,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         }
 
         if (message.getText().startsWith("/setpin")) {
-            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
+            if (!isAdmin(messageChatId, message.getFrom().getId())) {
                 sendMessage("You are not an admin", messageChatId, null, messageId);
                 return;
             }
@@ -99,7 +99,7 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         }
 
         if (message.getText().startsWith("/unsetpin")) {
-            if (!isAdmin(messageChatId, message.getFrom().getUserName())) {
+            if (!isAdmin(messageChatId, message.getFrom().getId())) {
                 sendMessage("You are not an admin", messageChatId, null, messageId);
                 return;
             }
@@ -118,12 +118,12 @@ public class BotMessageHandler extends TelegramLongPollingBot {
         return values;
     }
 
-    private boolean isAdmin(String chatId, String userName) {
+    private boolean isAdmin(String chatId, Long userId) {
         GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
         getChatAdministrators.setChatId(chatId);
         try {
             List<ChatMember> chatAdministrators = execute(getChatAdministrators);
-            return chatAdministrators.stream().anyMatch(chatMember -> chatMember.getUser().getUserName().equals(userName));
+            return chatAdministrators.stream().anyMatch(chatMember -> chatMember.getUser().getId().equals(userId));
         } catch (TelegramApiException e) {
             log.severe("Error getting chat administrators: " + e.getMessage());
             return false;

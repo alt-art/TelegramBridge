@@ -58,14 +58,12 @@ public class MessageListener extends TelegramFeature {
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         Message message = update.getMessage();
-        if (message == null || !message.hasText()) {
-            return;
-        }
-        String username = message.getFrom().getUserName();
-        if (TelegramBridge.config.getSendToChat()) {
+        String text = message.getText();
+        if (text != null && !text.startsWith("/") && TelegramBridge.config.getSendToChat()) {
+            String username = message.getFrom().getUserName();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                    HashMap<String, String> values = makeMessageMap(username, message.getText());
+                    HashMap<String, String> values = makeMessageMap(username, text);
                     Message replyToMessage = message.getReplyToMessage();
                     ComponentBuilder componentBuilder = new ComponentBuilder();
                     if (replyToMessage != null && replyToMessage.hasText()) {

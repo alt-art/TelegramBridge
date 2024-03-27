@@ -58,6 +58,9 @@ public class MessageListener extends TelegramFeature {
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         Message message = update.getMessage();
+        if (message == null || !message.hasText()) {
+            return;
+        }
         String username = message.getFrom().getUserName();
         if (TelegramBridge.config.getSendToChat()) {
             for (Player player : Bukkit.getOnlinePlayers()) {

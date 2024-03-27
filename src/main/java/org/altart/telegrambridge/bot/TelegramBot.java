@@ -30,6 +30,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final Plugin plugin;
     private final Map<String, TelegramCommandExecutor> commands = new HashMap<>();
 
+    private final List<TelegramFeature> features = new ArrayList<>();
+
     public final PinMessage pinMessageFeature = new PinMessage(this);
     public final UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
     public final MessageListener messageListenerFeature = new MessageListener(this);
@@ -44,6 +46,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         commands.put("setpin", new SetPinCommand());
         commands.put("unsetpin", new UnsetPinCommand());
         commands.put("setthread", new SetThreadCommand());
+
+        features.add(pinMessageFeature);
+        features.add(userAutocompleteFeature);
+        features.add(messageListenerFeature);
+        features.add(sentMediaFeature);
     }
 
     public void onCommand(String command_text, Message message) {
@@ -69,10 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         List<Config.Chat> chats = config.getChats();
         if (chats.stream().noneMatch(chat -> chat.id.equals(messageChatId))) return;
 
-        pinMessageFeature.onUpdateReceived(update);
-        userAutocompleteFeature.onUpdateReceived(update);
-        messageListenerFeature.onUpdateReceived(update);
-        sentMediaFeature.onUpdateReceived(update);
+        features.parallelStream().forEach(feature -> feature.onUpdateReceived(update));
 
         if (!message.hasText()) return;
         if (message.getText().startsWith("/")) {

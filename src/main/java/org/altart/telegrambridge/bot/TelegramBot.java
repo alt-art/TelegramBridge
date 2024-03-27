@@ -53,9 +53,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         features.add(sentMediaFeature);
     }
 
-    public void onCommand(String command_text, Message message) {
+    private void onCommand(String command_text, Message message) {
         String[] command_args = command_text.split(" ");
-        String command = command_args[0].substring(1);
+        String command = command_args[0].substring(1, command_args[0].indexOf("@"));
         TelegramCommandExecutor executor = commands.get(command);
         if (executor != null) {
             if (executor.requirePermission && isNotAdmin(message.getChatId().toString(), message.getFrom().getId())) {

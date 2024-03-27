@@ -22,7 +22,7 @@ public class ChatEvent implements Listener {
                 values.put("playername", playerNick);
                 values.put("message", message);
                 String text = Format.string(TelegramBridge.config.getMessagesFormatTelegram(), values);
-                TelegramBridge.telegramBot.send(text);
+                TelegramBridge.telegramBot.broadcastMessage(text);
             }
         }
     }

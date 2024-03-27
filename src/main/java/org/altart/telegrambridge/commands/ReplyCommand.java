@@ -1,6 +1,7 @@
 package org.altart.telegrambridge.commands;
 
 import org.altart.telegrambridge.TelegramBridge;
+import org.altart.telegrambridge.bot.feature.MessageListener;
 import org.altart.telegrambridge.utils.Format;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +19,7 @@ public class ReplyCommand implements CommandExecutor {
         String message = String.join(" ", args).substring(args[0].length() + 1);
         String playerName = sender.getName();
         String text = Format.chatMessage(playerName, message);
-        TelegramBridge.telegramBot.reply(uuid, text);
+        TelegramBridge.telegramBot.messageListenerFeature.reply(uuid, text);
         return true;
     }
 }

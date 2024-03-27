@@ -18,8 +18,8 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogJoinAndLeaveEvent()) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.getMessagesFormatJoin(), "playername", playerNick);
-            TelegramBridge.telegramBot.send(message);
-            TelegramBridge.telegramBot.addPlayer(event.getPlayer().getDisplayName());
+            TelegramBridge.telegramBot.broadcastMessage(message);
+            TelegramBridge.telegramBot.pinMessageFeature.addPlayer(event.getPlayer().getDisplayName());
         }
     }
 
@@ -28,8 +28,8 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogJoinAndLeaveEvent()) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.getMessagesFormatLeave(), "playername", playerNick);
-            TelegramBridge.telegramBot.send(message);
-            TelegramBridge.telegramBot.removePlayer(event.getPlayer().getDisplayName());
+            TelegramBridge.telegramBot.broadcastMessage(message);
+            TelegramBridge.telegramBot.pinMessageFeature.removePlayer(event.getPlayer().getDisplayName());
         }
     }
 
@@ -42,7 +42,7 @@ public class GameEvent implements Listener {
             values.put("playername", playerNick);
             values.put("deathmessage", deathMessage);
             String message = Format.string(TelegramBridge.config.getMessagesFormatDeath(), values);
-            TelegramBridge.telegramBot.send(message);
+            TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }
 
@@ -51,7 +51,7 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogSleepEvent()) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.config.getMessagesFormatSleep(), "playername", playerNick);
-            TelegramBridge.telegramBot.send(message);
+            TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }
 }

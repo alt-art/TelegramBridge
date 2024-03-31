@@ -15,7 +15,9 @@ import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdm
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
@@ -41,11 +43,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         super(Config.getInstance().getBotToken());
         this.config = Config.getInstance();
         this.plugin = plugin;
-        commands.put("online", new OnlineCommand());
-        commands.put("time", new TimeCommand());
-        commands.put("setpin", new SetPinCommand());
-        commands.put("unsetpin", new UnsetPinCommand());
-        commands.put("setthread", new SetThreadCommand());
+        commands.put("/online", new OnlineCommand());
+        commands.put("/time", new TimeCommand());
+        commands.put("/setpin", new SetPinCommand());
+        commands.put("/unsetpin", new UnsetPinCommand());
+        commands.put("/setthread", new SetThreadCommand());
 
         features.add(pinMessageFeature);
         features.add(userAutocompleteFeature);
@@ -55,11 +57,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void onCommand(String command_text, Message message) {
         String[] command_args = command_text.split(" ");
-        String command = command_args[0].substring(1, command_args[0].indexOf("@"));
+        int atIndex = command_args[0].indexOf("@");
+        String command = command_args[0].substring(0, atIndex == -1 ? command_args[0].length() : atIndex);
         TelegramCommandExecutor executor = commands.get(command);
         if (executor != null) {
             if (executor.requirePermission && isNotAdmin(message.getChatId().toString(), message.getFrom().getId())) {
-                sendMessage("You are not an admin", message.getChatId().toString(), null, message.getMessageId());
+                reply("You are not an admin", message.getChatId().toString(), message.getMessageId());
                 return;
             }
             CommandSender sender = new CommandSender(message, plugin, this);
@@ -101,29 +104,58 @@ public class TelegramBot extends TelegramLongPollingBot {
         return "TelegramBridgeBot";
     }
 
-    public Message sendMessage(String message, String chatId, @Nullable Integer threadId, @Nullable Integer replyMessageId) {
+    public void sendMessage(String message, String chatId, @Nullable Integer threadId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(message);
         sendMessage.setParseMode("HTML");
         sendMessage.setChatId(chatId);
-        if (replyMessageId != null) {
-            sendMessage.setReplyToMessageId(replyMessageId);
+        if (threadId != null) {
+            sendMessage.setMessageThreadId(threadId);
         }
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            log.severe("Error sending message: " + e.getMessage());
+        }
+    }
+
+    public void reply(@NotNull String message, @NotNull String chatId, @NotNull Integer replyMessageId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(message);
+        sendMessage.setParseMode("HTML");
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyToMessageId(replyMessageId);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            log.severe("Error sending reply: " + e.getMessage());
+        }
+    }
+
+    public Message sendSystemMessage(String message, String chatId, @Nullable Integer threadId) {
+        SendMessage sendMessage = new SendMessage();
+        LinkPreviewOptions linkPreviewOptions = new LinkPreviewOptions();
+        sendMessage.setLinkPreviewOptions(linkPreviewOptions);
+        linkPreviewOptions.setIsDisabled(true);
+        sendMessage.setText(message);
+        sendMessage.setParseMode("HTML");
+        sendMessage.setChatId(chatId);
         if (threadId != null) {
             sendMessage.setMessageThreadId(threadId);
         }
         try {
             return execute(sendMessage);
         } catch (TelegramApiException e) {
-            log.severe("Error sending message: " + e.getMessage());
+            log.severe("Error sending system message: " + e.getMessage());
             return null;
         }
     }
 
+
     public void broadcastMessage(String message) {
         List<Config.Chat> chats = config.getChats();
         for (Config.Chat chat : chats) {
-            sendMessage(message, chat.id, chat.thread, null);
+            sendMessage(message, chat.id, chat.thread);
         }
     }
 
@@ -143,8 +175,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void editMessage(String message, String chatId, Integer messageId) {
+    public void editSystemMessage(String message, String chatId, Integer messageId) {
         EditMessageText editMessageText = new EditMessageText();
+        LinkPreviewOptions linkPreviewOptions = new LinkPreviewOptions();
+        linkPreviewOptions.setIsDisabled(true);
+        editMessageText.setLinkPreviewOptions(linkPreviewOptions);
         editMessageText.setText(message);
         editMessageText.setChatId(chatId);
         editMessageText.setMessageId(messageId);
@@ -153,6 +188,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(editMessageText);
         } catch (TelegramApiException e) {
             log.severe("Error editing message: " + e.getMessage());
+        }
+    }
+
+    public void deleteMessage(String chatId, Integer messageId) {
+        try {
+            execute(new DeleteMessage(chatId, messageId));
+        } catch (TelegramApiException e) {
+            log.severe("Error deleting message: " + e.getMessage());
         }
     }
 
@@ -170,7 +213,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         public void sendMessage(String text) {
             String chatId = message.getChatId().toString();
             Integer replyMessageId = message.getMessageId();
-            TelegramBot.this.sendMessage(text, chatId, null, replyMessageId);
+            TelegramBot.this.reply(text, chatId, replyMessageId);
         }
     }
 }

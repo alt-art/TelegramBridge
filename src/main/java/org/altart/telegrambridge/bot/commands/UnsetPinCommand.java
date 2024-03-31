@@ -17,6 +17,7 @@ public class UnsetPinCommand extends TelegramCommandExecutor {
             if (chat.id.equals(chatId)) {
                 TelegramBridge.config.setPinnedMessageId(chatId, null);
                 sender.bot.unpinMessage(chatId, chat.pinnedMessageId);
+                sender.bot.deleteMessage(chatId, chat.pinnedMessageId);
             }
         }
     }

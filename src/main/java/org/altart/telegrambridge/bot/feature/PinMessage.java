@@ -16,6 +16,7 @@ public final class PinMessage extends TelegramFeature {
 
     public PinMessage(TelegramBot telegramBot) {
         super(telegramBot);
+        updatePinnedMessage();
     }
 
     static public String buildPinnedMessage() {
@@ -42,7 +43,7 @@ public final class PinMessage extends TelegramFeature {
             if (chat.pinnedMessageId != null) {
                 String chatId = chat.id;
                 String pinnedMessageText = buildPinnedMessage();
-                telegramBot.editMessage(pinnedMessageText, chatId, chat.pinnedMessageId);
+                telegramBot.editSystemMessage(pinnedMessageText, chatId, chat.pinnedMessageId);
             }
         }
     }

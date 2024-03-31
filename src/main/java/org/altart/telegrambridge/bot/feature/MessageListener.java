@@ -40,7 +40,7 @@ public class MessageListener extends TelegramFeature {
         }
         String chatId = messageInfo.chatId;
         Integer messageId = messageInfo.messageId;
-        telegramBot.sendMessage(text, chatId, null, messageId);
+        telegramBot.reply(text, chatId, messageId);
         String username = messageInfo.username;
         String message = messageInfo.message;
         ComponentBuilder componentBuilder = new ComponentBuilder();

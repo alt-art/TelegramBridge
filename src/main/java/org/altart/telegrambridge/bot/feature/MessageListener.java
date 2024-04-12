@@ -1,9 +1,10 @@
 package org.altart.telegrambridge.bot.feature;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.altart.telegrambridge.Permissions;
 import org.altart.telegrambridge.TelegramBridge;
@@ -43,14 +44,13 @@ public class MessageListener extends TelegramFeature {
         telegramBot.reply(text, chatId, messageId);
         String username = messageInfo.username;
         String message = messageInfo.message;
-        ComponentBuilder componentBuilder = new ComponentBuilder();
-        HashMap<String, String> values = makeMessageMap(username, shrinkReplyText(message));
-        componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatReply(), values));
-        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
-        componentBuilder.append(text, ComponentBuilder.FormatRetention.NONE);
+        TextComponent finalComponent = new TextComponent();
+        finalComponent.addExtra(replyComponent(username, message));
+        TextComponent component = new TextComponent(text);
+        finalComponent.addExtra(component);
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                player.spigot().sendMessage(componentBuilder.create());
+                player.spigot().sendMessage(finalComponent);
             }
         }
     }
@@ -59,21 +59,24 @@ public class MessageListener extends TelegramFeature {
     public void onUpdateReceived(@NotNull Update update) {
         Message message = update.getMessage();
         String text = message.getText();
+        TelegramBridge.log.info("Message received: " + text);
         if (text != null && !text.startsWith("/") && TelegramBridge.config.getSendToChat()) {
             String username = message.getFrom().getUserName();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
+                    BaseComponent finalComponent = new TextComponent();
                     HashMap<String, String> values = makeMessageMap(username, text);
-                    Message replyToMessage = message.getReplyToMessage();
-                    ComponentBuilder componentBuilder = new ComponentBuilder();
-                    if (replyToMessage != null && replyToMessage.hasText()) {
-                        String replyToUsername = replyToMessage.getFrom().getUserName();
-                        String replyToText = replyToMessage.getText();
-                        HashMap<String, String> replyValues = makeMessageMap(replyToUsername, shrinkReplyText(replyToText));
-                        componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyValues));
-                        componentBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyToText)));
+
+                    Message reply = message.getReplyToMessage();
+                    if (reply != null && reply.hasText()) {
+                        String replyUsername = reply.getFrom().getUserName();
+                        String replyMessage = reply.getText();
+                        finalComponent.addExtra(replyComponent(replyUsername, replyMessage));
                     }
-                    componentBuilder.append(Format.string(TelegramBridge.config.getMessagesFormatChat(), values), ComponentBuilder.FormatRetention.NONE);
+
+                    TextComponent component = new TextComponent(Format.string(TelegramBridge.config.getMessagesFormatChat(), values));
+                    finalComponent.addExtra(component);
+
                     if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
                         Integer messageId = message.getMessageId();
                         String chatId = message.getChatId().toString();
@@ -82,12 +85,36 @@ public class MessageListener extends TelegramFeature {
                             uuid = RandomStringUtils.random(8, true, true);
                         }
                         messagesInfo.put(uuid, new MessageInfo(chatId, messageId, message.getText(), username));
-                        componentBuilder.append(" [Reply]").color(ChatColor.AQUA).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " ")).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
+
+                        TextComponent replyButtonComponent = new TextComponent(" [Reply]");
+                        replyButtonComponent.setColor(ChatColor.AQUA);
+                        replyButtonComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " "));
+
+                        try {
+                            Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
+                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
+                        } catch (ClassNotFoundException ignored) {
+                        }
+
+                        finalComponent.addExtra(replyButtonComponent);
                     }
-                    player.spigot().sendMessage(componentBuilder.create());
+                    player.spigot().sendMessage(finalComponent);
                 }
             }
         }
+    }
+
+    private static TextComponent replyComponent(String username, String message) {
+        HashMap<String, String> replyValues = makeMessageMap(username, shrinkReplyText(message));
+        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyValues));
+        try {
+            Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
+            replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
+        } catch (ClassNotFoundException ignored) {
+            HashMap<String, String> replyHoverValues = makeMessageMap(username, message);
+            replyComponent.setText(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyHoverValues));
+        }
+        return replyComponent;
     }
 
     private static @NotNull HashMap<String, String> makeMessageMap(String user, String message) {

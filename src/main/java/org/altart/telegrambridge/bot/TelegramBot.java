@@ -151,7 +151,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
     public void broadcastMessage(String message) {
         List<Config.Chat> chats = config.getChats();
         for (Config.Chat chat : chats) {

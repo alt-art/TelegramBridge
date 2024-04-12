@@ -3,6 +3,7 @@ package org.altart.telegrambridge;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -159,7 +160,7 @@ public class Config {
         @Nullable
         public Integer pinnedMessageId;
 
-        public Chat(String id, @Nullable Integer thread, @Nullable Integer pinnedMessageId) {
+        public Chat(@NotNull String id, @Nullable Integer thread, @Nullable Integer pinnedMessageId) {
             this.id = id;
             this.thread = thread;
             this.pinnedMessageId = pinnedMessageId;
@@ -169,8 +170,14 @@ public class Config {
             List<Chat> chats = new ArrayList<>();
             for (Map<?, ?> chat : chats_map) {
                 String id = (String) chat.get("id");
-                Integer thread = (Integer) chat.get("thread");
-                Integer pinnedMessageId = (Integer) chat.get("pinnedMessageId");
+                Integer thread = null;
+                if (chat.get("thread") != null) {
+                    thread = (int) chat.get("thread");
+                }
+                Integer pinnedMessageId = null;
+                if (chat.get("pinnedMessageId") != null) {
+                    pinnedMessageId = (int) chat.get("pinnedMessageId");
+                }
                 chats.add(new Chat(id, thread, pinnedMessageId));
             }
             return chats;

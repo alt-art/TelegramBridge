@@ -37,9 +37,10 @@ public final class TelegramBridge extends JavaPlugin {
             telegramBot = new TelegramBot(this);
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             botSession = telegramBotsApi.registerBot(telegramBot);
-            TelegramBridge.log.info("Telegram bot registered");
+            log.info("Telegram bot registered");
         } catch (Exception e) {
-            TelegramBridge.log.severe("Error registering bot: " + e.getMessage());
+            log.severe("Error registering bot: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> log.severe(line.toString()));
         }
 
         Bukkit.getPluginManager().registerEvents(new ChatEvent(), this);

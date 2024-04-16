@@ -1,10 +1,9 @@
 package org.altart.telegrambridge.commands;
 
-import org.altart.telegrambridge.Config;
+import org.altart.telegrambridge.config.Config;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 
 import org.jetbrains.annotations.NotNull;
 

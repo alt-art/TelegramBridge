@@ -1,6 +1,6 @@
 package org.altart.telegrambridge.bot.feature;
 
-import org.altart.telegrambridge.Config;
+import org.altart.telegrambridge.config.Config;
 import org.altart.telegrambridge.TelegramBridge;
 import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.bot.TelegramFeature;

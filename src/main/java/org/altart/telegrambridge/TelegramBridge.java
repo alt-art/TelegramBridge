@@ -5,6 +5,7 @@ import org.altart.telegrambridge.commands.MentionCommand;
 import org.altart.telegrambridge.commands.MentionTabCompletion;
 import org.altart.telegrambridge.commands.ReloadCommand;
 import org.altart.telegrambridge.commands.ReplyCommand;
+import org.altart.telegrambridge.config.Config;
 import org.altart.telegrambridge.events.ChatEvent;
 import org.altart.telegrambridge.events.GameEvent;
 import org.bukkit.Bukkit;

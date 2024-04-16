@@ -1,5 +1,6 @@
-package org.altart.telegrambridge;
+package org.altart.telegrambridge.config;
 
+import org.altart.telegrambridge.TelegramBridge;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;

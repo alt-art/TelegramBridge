@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.altart.telegrambridge.Permissions;
 import org.altart.telegrambridge.TelegramBridge;
@@ -23,9 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MessageListener extends TelegramFeature {
-    private final LinkedHashMap<String, MessageInfo> messagesInfo = new LinkedHashMap<>() {
+    private final LinkedHashMap<String, MessageInfo> messagesInfo = new LinkedHashMap<String, MessageInfo>() {
         @Override
-        protected boolean removeEldestEntry(Map.Entry<String, MessageInfo> _eldest) {
+        public boolean removeEldestEntry(Map.Entry<String, MessageInfo> _eldest) {
             return size() > 100;
         }
     };
@@ -44,7 +45,7 @@ public class MessageListener extends TelegramFeature {
         telegramBot.reply(text, chatId, messageId);
         String username = messageInfo.username;
         String message = messageInfo.message;
-        TextComponent finalComponent = new TextComponent();
+        TextComponent finalComponent = new TextComponent("");
         finalComponent.addExtra(replyComponent(username, message));
         TextComponent component = new TextComponent(text);
         finalComponent.addExtra(component);
@@ -55,6 +56,7 @@ public class MessageListener extends TelegramFeature {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         Message message = update.getMessage();
@@ -64,7 +66,7 @@ public class MessageListener extends TelegramFeature {
             String username = message.getFrom().getUserName();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                    BaseComponent finalComponent = new TextComponent();
+                    BaseComponent finalComponent = new TextComponent("");
                     HashMap<String, String> values = makeMessageMap(username, text);
 
                     Message reply = message.getReplyToMessage();
@@ -94,6 +96,7 @@ public class MessageListener extends TelegramFeature {
                             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
                             replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
                         } catch (ClassNotFoundException ignored) {
+                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to reply").create()));
                         }
 
                         finalComponent.addExtra(replyButtonComponent);
@@ -104,6 +107,7 @@ public class MessageListener extends TelegramFeature {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static TextComponent replyComponent(String username, String message) {
         HashMap<String, String> replyValues = makeMessageMap(username, shrinkReplyText(message));
         TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyValues));
@@ -111,8 +115,7 @@ public class MessageListener extends TelegramFeature {
             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
             replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));
         } catch (ClassNotFoundException ignored) {
-            HashMap<String, String> replyHoverValues = makeMessageMap(username, message);
-            replyComponent.setText(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyHoverValues));
+            replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(message).create()));
         }
         return replyComponent;
     }

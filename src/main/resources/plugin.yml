@@ -1,7 +1,7 @@
 name: TelegramBridge
 version: '${version}'
 main: org.altart.telegrambridge.TelegramBridge
-api-version: '1.18'
+api-version: '1.13'
 authors: [alt-art]
 description: Simple plugin that fowards minecraft messages to telegram and vice versa
 website: altart.top

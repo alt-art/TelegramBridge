@@ -11,8 +11,9 @@ public class MentionCommand implements CommandExecutor {
         if (args.length < 1) {
             return false;
         }
-        if (sender instanceof Player player) {
+        if (sender instanceof Player) {
             String message = String.join(" ", args);
+            Player player = (Player) sender;
             player.chat(message);
             return true;
         }

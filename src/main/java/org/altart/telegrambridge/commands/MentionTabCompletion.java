@@ -1,7 +1,6 @@
 package org.altart.telegrambridge.commands;
 
 import org.altart.telegrambridge.TelegramBridge;
-import org.altart.telegrambridge.bot.feature.UserAutocomplete;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -16,8 +15,8 @@ public class MentionTabCompletion implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return List.copyOf(TelegramBridge.telegramBot.userAutocompleteFeature.getTelegramUsers());
+            return TelegramBridge.telegramBot.userAutocompleteFeature.getTelegramUsers();
         }
-        return List.of();
+        return null;
     }
 }

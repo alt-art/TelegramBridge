@@ -1,11 +1,12 @@
-This plugin adds a bridge between telegram and your minecraft sever.
+This plugin adds a bridge between telegram and your minecraft sever making possible to send and receive messages from
+telegram to minecraft and vice versa.
 
 ## Usage
 
 - Install the plugin and restart your server this will create a config file for you to proceed
-- Create a bot with `@BotFather` on telegram and disable “Group Privacy” on bot settings
-- Get your `chat_id` from your group with the `@ScanIDBot`
-- Now you can change the configuration to put your `chat_id` and `bot_token`
+- Create a bot with [`@BotFather`](https://t.me/BotFather) on telegram and disable “Group Privacy” on bot settings
+- Get your `chat id` from your group with the [`@ScanIDBot`](https://t.me/ScanIDBot)
+- Now you can change the configuration file `plugins/TelegramBridge/config.yml` to put your `chat id` and `bot token`
 - Restart your server
 
 ## Permissions
@@ -20,39 +21,18 @@ This plugin adds a bridge between telegram and your minecraft sever.
 
 ## Config
 
-This is the example config:
+To all the configuration options check [`CONFIG.md`](./CONFIG.md)
 
-```yml
-bot_token: your_token # your bot token from @BotFather remember to disable privacy mode
-chats: # your chat list, you can add multiple chats use '-' to separate them
-  - id: # your chat id, you can get it from @ScanIDBot
-    thread: null # your thread id (optional) if you want to send messages to a specific thread. /setthread on telegram chat can be used to set the thread automatically
-send_to_chat: true
-send_to_telegram: true
-log_join_and_leave_event: true
-log_death_event: true
-log_sleep_event: false
-months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-media_types: ['an image', 'a video', 'a document', 'an audio', 'a voice', 'a sticker', 'a contact', 'a location', 'a poll', 'a media']
-messages:
-  join: 'Player %playername% joined the game!'
-  leave: 'Player %playername% left the game!'
-  death: 'Player %playername% died! %deathmessage%'
-  sleep: 'Player %playername% is sleeping!'
-  telegram: '[%playername%]: %message%'
-  media: '§7[§bTelegram§7] §f[%user%] sent %type%\n %caption%'
-  chat: '§7[§bTelegram§7] §f[%user%] %message%'
-  reply: '- §breply to §7%user%: %message%§r -\n'
-  time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
-  online: 'There are %count% players online\n%players%'
-  pinned: 'Hey welcome to the chat!\nThere are %count% players online%players%'
-```
+## Translation
+
+To all the translation options check [`TRANSLATION.md`](./TRANSLATION.md)
 
 ## Telegram Commands
 
 - `/setthread` - When using threads, this command will set witch thread the events will be sent to
-- `/setpin` - Send a message to the chat and pin it which will show dynamically the online players (bot needs to have pin permission) (beta)
-- `/unsetpin` - Unpin the message that was pinned by `/setpin` (bot needs to have pin permission) (beta)
+- `/setpin` - Send a message to the chat and pin it which will show dynamically the online players (bot needs to have
+  pin permission)
+- `/unsetpin` - Unpin the message that was pinned by `/setpin` (bot needs to have pin permission)
 - `/online` - Show the online players on the chat
 - `/time` - Show the server time and date
 

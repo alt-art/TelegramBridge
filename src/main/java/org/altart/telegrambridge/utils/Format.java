@@ -21,11 +21,4 @@ public class Format {
         result = result.replace("%" + key + "%", value);
         return result;
     }
-
-    public static String chatMessage(String playerName, String message) {
-        HashMap<String, String> values = new HashMap<>();
-        values.put("playername", playerName);
-        values.put("message", message);
-        return string(TelegramBridge.translations.chatMessage, values);
-    }
 }

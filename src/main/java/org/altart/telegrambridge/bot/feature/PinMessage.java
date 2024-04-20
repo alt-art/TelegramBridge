@@ -8,7 +8,7 @@ import org.altart.telegrambridge.utils.Format;
 
 import java.util.*;
 
-public final class PinMessage extends TelegramFeature {
+public class PinMessage extends TelegramFeature {
     private static final Set<String> players = new HashSet<>();
 
     public PinMessage(TelegramBot telegramBot) {

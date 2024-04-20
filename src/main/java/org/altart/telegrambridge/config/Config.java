@@ -35,7 +35,6 @@ public class Config {
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
                 try {
-                    TelegramBridge.log.info(field.getType().getName());
                     if (config.contains(field.getName())) {
                         if (field.getType().equals(String.class)) {
                             field.set(this, config.get(field.getName()));

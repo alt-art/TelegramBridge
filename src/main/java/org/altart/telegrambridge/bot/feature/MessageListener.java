@@ -61,9 +61,9 @@ public class MessageListener extends TelegramFeature {
     public void onUpdateReceived(@NotNull Update update) {
         Message message = update.getMessage();
         String text = message.getText();
-        TelegramBridge.log.info("Message received: " + text);
         if (text != null && !text.startsWith("/") && TelegramBridge.config.sendToChat) {
             String username = message.getFrom().getUserName();
+            TelegramBridge.log.info("Telegram message received from " + username + ": " + text);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
                     BaseComponent finalComponent = new TextComponent("");

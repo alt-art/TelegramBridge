@@ -27,14 +27,14 @@ public class SentMedia extends TelegramFeature {
             String username = message.getFrom().getUserName();
             String caption = message.getCaption();
             caption = caption == null ? "" : "\n" + caption;
-            if (TelegramBridge.config.getSendToChat()) {
+            if (TelegramBridge.config.sendToChat) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.hasPermission(Permissions.RECEIVE.getString())) {
                         HashMap<String, String> values = new HashMap<>();
                         values.put("user", username);
                         values.put("caption", caption);
                         values.put("type", determineMediaType(message));
-                        String text = Format.string(TelegramBridge.config.getMessagesFormatMedia(), values);
+                        String text = Format.string(TelegramBridge.translations.telegramMedia, values);
                         player.sendMessage(text);
                     }
                 }
@@ -47,15 +47,15 @@ public class SentMedia extends TelegramFeature {
     }
 
     private String determineMediaType(@NotNull Message message) {
-        if (message.hasPhoto()) return TelegramBridge.config.getMediaTypes().get(0);
-        if (message.hasVideo()) return TelegramBridge.config.getMediaTypes().get(1);
-        if (message.hasDocument()) return TelegramBridge.config.getMediaTypes().get(2);
-        if (message.hasAudio()) return TelegramBridge.config.getMediaTypes().get(3);
-        if (message.hasVoice()) return TelegramBridge.config.getMediaTypes().get(4);
-        if (message.hasSticker()) return TelegramBridge.config.getMediaTypes().get(5);
-        if (message.hasContact()) return TelegramBridge.config.getMediaTypes().get(6);
-        if (message.hasLocation()) return TelegramBridge.config.getMediaTypes().get(7);
-        if (message.hasPoll()) return TelegramBridge.config.getMediaTypes().get(8);
-        return TelegramBridge.config.getMediaTypes().get(9);
+        if (message.hasPhoto()) return TelegramBridge.translations.mediaTypes[0];
+        if (message.hasVideo()) return TelegramBridge.translations.mediaTypes[1];
+        if (message.hasDocument()) return TelegramBridge.translations.mediaTypes[2];
+        if (message.hasAudio()) return TelegramBridge.translations.mediaTypes[3];
+        if (message.hasVoice()) return TelegramBridge.translations.mediaTypes[4];
+        if (message.hasSticker()) return TelegramBridge.translations.mediaTypes[5];
+        if (message.hasContact()) return TelegramBridge.translations.mediaTypes[6];
+        if (message.hasLocation()) return TelegramBridge.translations.mediaTypes[7];
+        if (message.hasPoll()) return TelegramBridge.translations.mediaTypes[8];
+        return TelegramBridge.translations.mediaTypes[9];
     }
 }

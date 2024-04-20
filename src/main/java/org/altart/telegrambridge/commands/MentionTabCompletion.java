@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MentionTabCompletion implements TabCompleter {
-
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

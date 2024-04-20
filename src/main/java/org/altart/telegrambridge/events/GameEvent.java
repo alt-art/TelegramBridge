@@ -15,9 +15,9 @@ import java.util.HashMap;
 public class GameEvent implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogJoinAndLeaveEvent()) {
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.config.getMessagesFormatJoin(), "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.join, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
             TelegramBridge.telegramBot.pinMessageFeature.addPlayer(event.getPlayer().getDisplayName());
         }
@@ -25,9 +25,9 @@ public class GameEvent implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogJoinAndLeaveEvent()) {
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.config.getMessagesFormatLeave(), "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.leave, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
             TelegramBridge.telegramBot.pinMessageFeature.removePlayer(event.getPlayer().getDisplayName());
         }
@@ -35,22 +35,22 @@ public class GameEvent implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogDeathEvent()) {
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.deathEvent) {
             String playerNick = event.getEntity().getDisplayName();
             String deathMessage = event.getDeathMessage();
             HashMap<String, String> values = new HashMap<>();
             values.put("playername", playerNick);
             values.put("deathmessage", deathMessage);
-            String message = Format.string(TelegramBridge.config.getMessagesFormatDeath(), values);
+            String message = Format.string(TelegramBridge.translations.death, values);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }
 
     @EventHandler
     public void onPlayerAsleep(PlayerBedEnterEvent event) {
-        if (TelegramBridge.config.getSendToTelegram() && TelegramBridge.config.getLogSleepEvent()) {
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.sleepEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.config.getMessagesFormatSleep(), "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.sleep, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }

@@ -13,7 +13,7 @@ public class UnsetPinCommand extends TelegramCommandExecutor {
     @Override
     public void onCommand(TelegramBot.CommandSender sender, String[] args) {
         String chatId = String.valueOf(sender.message.getChatId());
-        for (Config.Chat chat : TelegramBridge.config.getChats()) {
+        for (Config.Chat chat : TelegramBridge.config.chats) {
             if (chat.id.equals(chatId)) {
                 TelegramBridge.config.setPinnedMessageId(chatId, null);
                 sender.bot.unpinMessage(chatId, chat.pinnedMessageId);

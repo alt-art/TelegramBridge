@@ -22,7 +22,7 @@ public class OnlineCommand extends TelegramCommandExecutor {
         HashMap<String, String> values = new HashMap<>();
         values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
         values.put("count", String.valueOf(players.size()));
-        String response = Format.string(TelegramBridge.config.getMessagesFormatOnline(), values);
+        String response = Format.string(TelegramBridge.translations.online, values);
         sender.sendMessage(response);
     }
 }

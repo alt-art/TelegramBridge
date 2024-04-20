@@ -6,10 +6,7 @@ import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.bot.TelegramFeature;
 import org.altart.telegrambridge.utils.Format;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class PinMessage extends TelegramFeature {
     private static final Set<String> players = new HashSet<>();
@@ -24,7 +21,7 @@ public final class PinMessage extends TelegramFeature {
         HashMap<String, String> values = new HashMap<>();
         values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
         values.put("count", String.valueOf(players.size()));
-        return Format.string(TelegramBridge.config.getMessagesFormatPinned(), values);
+        return Format.string(TelegramBridge.translations.pinned, values);
     }
 
     public void addPlayer(String player) {
@@ -38,7 +35,7 @@ public final class PinMessage extends TelegramFeature {
     }
 
     private void updatePinnedMessage() {
-        List<Config.Chat> chats = TelegramBridge.config.getChats();
+        List<Config.Chat> chats = TelegramBridge.config.chats;
         for (Config.Chat chat : chats) {
             if (chat.pinnedMessageId != null) {
                 String chatId = chat.id;

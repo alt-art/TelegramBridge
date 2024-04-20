@@ -1,7 +1,6 @@
 package org.altart.telegrambridge.commands;
 
 import org.altart.telegrambridge.TelegramBridge;
-import org.altart.telegrambridge.bot.feature.MessageListener;
 import org.altart.telegrambridge.utils.Format;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class ReplyCommand implements CommandExecutor {
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String _label, @NotNull String[] args) {
         if (args.length < 2) {

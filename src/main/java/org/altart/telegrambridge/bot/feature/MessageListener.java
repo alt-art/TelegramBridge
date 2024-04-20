@@ -62,7 +62,7 @@ public class MessageListener extends TelegramFeature {
         Message message = update.getMessage();
         String text = message.getText();
         TelegramBridge.log.info("Message received: " + text);
-        if (text != null && !text.startsWith("/") && TelegramBridge.config.getSendToChat()) {
+        if (text != null && !text.startsWith("/") && TelegramBridge.config.sendToChat) {
             String username = message.getFrom().getUserName();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
@@ -76,7 +76,7 @@ public class MessageListener extends TelegramFeature {
                         finalComponent.addExtra(replyComponent(replyUsername, replyMessage));
                     }
 
-                    TextComponent component = new TextComponent(Format.string(TelegramBridge.config.getMessagesFormatChat(), values));
+                    TextComponent component = new TextComponent(Format.string(TelegramBridge.translations.telegramMessage, values));
                     finalComponent.addExtra(component);
 
                     if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
@@ -110,7 +110,7 @@ public class MessageListener extends TelegramFeature {
     @SuppressWarnings("deprecation")
     private static TextComponent replyComponent(String username, String message) {
         HashMap<String, String> replyValues = makeMessageMap(username, shrinkReplyText(message));
-        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.config.getMessagesFormatReply(), replyValues));
+        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.translations.telegramReply, replyValues));
         try {
             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
             replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));

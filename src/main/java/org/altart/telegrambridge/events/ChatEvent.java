@@ -14,14 +14,14 @@ public class ChatEvent implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (!event.getMessage().startsWith("/") && player.hasPermission(Permissions.SEND.getString()) && TelegramBridge.config.getSendToTelegram()) {
+        if (!event.getMessage().startsWith("/") && player.hasPermission(Permissions.SEND.getString()) && TelegramBridge.config.sendToTelegram) {
             String playerNick = player.getDisplayName();
             String message = event.getMessage().replaceAll("§.", "");
             if (!message.isEmpty()) {
                 HashMap<String, String> values = new HashMap<>();
                 values.put("playername", playerNick);
                 values.put("message", message);
-                String text = Format.string(TelegramBridge.config.getMessagesFormatTelegram(), values);
+                String text = Format.string(TelegramBridge.translations.chatMessage, values);
                 TelegramBridge.telegramBot.broadcastMessage(text);
             }
         }

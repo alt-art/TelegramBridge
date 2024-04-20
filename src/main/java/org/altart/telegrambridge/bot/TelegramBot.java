@@ -40,8 +40,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     public final SentMedia sentMediaFeature = new SentMedia(this);
 
     public TelegramBot(Plugin plugin) {
-        super(Config.getInstance().getBotToken());
-        this.config = Config.getInstance();
+        super(TelegramBridge.config.botToken);
+        this.config = TelegramBridge.config;
         this.plugin = plugin;
         commands.put("/online", new OnlineCommand());
         commands.put("/time", new TimeCommand());
@@ -76,7 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (message == null) return;
         if (message.getFrom().getIsBot()) return;
         String messageChatId = message.getChatId().toString();
-        List<Config.Chat> chats = config.getChats();
+        List<Config.Chat> chats = config.chats;
         if (chats.stream().noneMatch(chat -> chat.id.equals(messageChatId))) return;
 
         features.parallelStream().forEach(feature -> feature.onUpdateReceived(update));
@@ -95,6 +95,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             return chatAdministrators.stream().noneMatch(chatMember -> chatMember.getUser().getId().equals(userId));
         } catch (TelegramApiException e) {
             log.severe("Error getting chat administrators: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
             return true;
         }
     }
@@ -116,6 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.severe("Error sending message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
@@ -129,6 +131,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.severe("Error sending reply: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
@@ -147,12 +150,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             return execute(sendMessage);
         } catch (TelegramApiException e) {
             log.severe("Error sending system message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
             return null;
         }
     }
 
     public void broadcastMessage(String message) {
-        List<Config.Chat> chats = config.getChats();
+        List<Config.Chat> chats = config.chats;
         for (Config.Chat chat : chats) {
             sendMessage(message, chat.id, chat.thread);
         }
@@ -163,6 +167,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(new PinChatMessage(chatId, messageId));
         } catch (TelegramApiException e) {
             log.severe("Error pinning message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
@@ -171,6 +176,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(new UnpinChatMessage(chatId, messageId));
         } catch (TelegramApiException e) {
             log.severe("Error unpinning message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
@@ -187,6 +193,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(editMessageText);
         } catch (TelegramApiException e) {
             log.severe("Error editing message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
@@ -195,6 +202,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(new DeleteMessage(chatId, messageId));
         } catch (TelegramApiException e) {
             log.severe("Error deleting message: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 

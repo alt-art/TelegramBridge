@@ -3,153 +3,96 @@ package org.altart.telegrambridge.config;
 import org.altart.telegrambridge.TelegramBridge;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
+@SuppressWarnings("unused")
 public class Config {
-    private final Plugin plugin;
-    private static Config instance = null;
+    public String botToken = "YOUR_BOT_TOKEN";
+    public List<Chat> chats = Collections.singletonList(new Chat("YOUR_CHAT_ID", null, null));
 
-    private FileConfiguration config;
+    public boolean sendToChat = true;
+    public boolean sendToTelegram = true;
 
-    public Config(Plugin plugin) {
-        this.plugin = plugin;
-        instance = this;
+    public boolean joinAndLeaveEvent = true;
+    public boolean deathEvent = true;
+    public boolean sleepEvent = false;
+
+    public Config() {
         load();
     }
 
-    public static Config getInstance() {
-        return instance;
-    }
-
     public void load() {
-        File configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/config.yml");
-        if (!configFile.exists()) {
-            plugin.saveDefaultConfig();
+        File configFile = new File(TelegramBridge.plugin.getDataFolder().getAbsoluteFile(), "config.yml");
+        if (configFile.exists()) {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                try {
+                    TelegramBridge.log.info(field.getType().getName());
+                    if (config.contains(field.getName())) {
+                        if (field.getType().equals(String.class)) {
+                            field.set(this, config.get(field.getName()));
+                        } else if (field.getType().equals(Boolean.class)) {
+                            field.set(this, config.getBoolean(field.getName()));
+                        } else if (field.getType().equals(List.class)) {
+                            field.set(this, Chat.chatsFrom(config.getMapList(field.getName())));
+                        }
+                    }
+                } catch (Exception e) {
+                    TelegramBridge.log.severe("Error loading config: " + e.getMessage());
+                    Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
+                }
+            }
+        } else {
+            TelegramBridge.log.warning("Config file not found, creating a new one...");
+            try {
+                FileConfiguration config = new YamlConfiguration();
+                config.set("botToken", botToken);
+                config.set("chats", Chat.chatsToMaps(chats));
+                config.save(configFile);
+            } catch (Exception e) {
+                TelegramBridge.log.severe("Error creating config file: " + e.getMessage());
+                Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
+            }
         }
-        config = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    private void saveValue(String key, Object value) {
-        File configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/config.yml");
-        config.set(key, value);
+    public void save() {
+        File configFile = new File(TelegramBridge.plugin.getDataFolder().getAbsoluteFile(), "config.yml");
         try {
+            FileConfiguration config = new YamlConfiguration();
+            config.set("botToken", botToken);
+            config.set("chats", Chat.chatsToMaps(chats));
             config.save(configFile);
         } catch (Exception e) {
             TelegramBridge.log.severe("Error saving config: " + e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
-    public void setThread(String chatId, Integer threadId) {
-        List<Chat> chats = getChats();
-        for (Chat chat : chats) {
-            if (chat.id.equals(chatId)) {
-                chat.thread = threadId;
-                saveValue("chats", Chat.chatsToMaps(chats));
-                return;
-            }
-        }
-        chats.add(new Chat(chatId, threadId, null));
-        saveValue("chats", Chat.chatsToMaps(chats));
-    }
-
-    public void setPinnedMessageId(String chatId, Integer messageId) {
-        List<Chat> chats = getChats();
+    public void setPinnedMessageId(@NotNull String chatId, @Nullable Integer messageId) {
         for (Chat chat : chats) {
             if (chat.id.equals(chatId)) {
                 chat.pinnedMessageId = messageId;
-                saveValue("chats", Chat.chatsToMaps(chats));
-                return;
+                break;
             }
         }
-        chats.add(new Chat(chatId, null, messageId));
-        saveValue("chats", Chat.chatsToMaps(chats));
+        save();
     }
 
-    public String getBotToken() {
-        return config.getString("bot_token");
-    }
-
-    public List<Chat> getChats() {
-        return Chat.chatsFrom(config.getMapList("chats"));
-    }
-
-    public boolean getSendToTelegram() {
-        return config.getBoolean("send_to_telegram");
-    }
-
-    public boolean getSendToChat() {
-        return config.getBoolean("send_to_chat");
-    }
-
-    public boolean getLogJoinAndLeaveEvent() {
-        return config.getBoolean("log_join_and_leave_event");
-    }
-
-    public boolean getLogDeathEvent() {
-        return config.getBoolean("log_death_event");
-    }
-
-    public boolean getLogSleepEvent() {
-        return config.getBoolean("log_sleep_event");
-    }
-
-    public String getMessagesFormatJoin() {
-        return config.getString("messages.join");
-    }
-
-    public String getMessagesFormatLeave() {
-        return config.getString("messages.leave");
-    }
-
-    public String getMessagesFormatDeath() {
-        return config.getString("messages.death");
-    }
-
-    public String getMessagesFormatSleep() {
-        return config.getString("messages.sleep");
-    }
-
-    public String getMessagesFormatTelegram() {
-        return config.getString("messages.telegram");
-    }
-
-    public String getMessagesFormatMedia() {
-        return config.getString("messages.media");
-    }
-
-    public String getMessagesFormatChat() {
-        return config.getString("messages.chat");
-    }
-
-    public String getMessagesFormatReply() {
-        return config.getString("messages.reply");
-    }
-
-    public String getMessagesFormatOnline() {
-        return config.getString("messages.online");
-    }
-
-    public String getMessagesFormatTime() {
-        return config.getString("messages.time");
-    }
-    public String getMessagesFormatPinned() {
-        return config.getString("messages.pinned");
-    }
-
-    public List<String> getMonths() {
-        return config.getStringList("months");
-    }
-
-    public List<String> getMediaTypes() {
-        return config.getStringList("media_types");
+    public void setThread(@NotNull String chatId, @Nullable Integer threadId) {
+        for (Chat chat : chats) {
+            if (chat.id.equals(chatId)) {
+                chat.thread = threadId;
+                break;
+            }
+        }
+        save();
     }
 
     public static class Chat {

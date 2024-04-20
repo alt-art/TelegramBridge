@@ -6,6 +6,7 @@ import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.bot.TelegramCommandExecutor;
 import org.altart.telegrambridge.bot.feature.PinMessage;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class SetPinCommand extends TelegramCommandExecutor {
@@ -16,7 +17,7 @@ public class SetPinCommand extends TelegramCommandExecutor {
     @Override
     public void onCommand(TelegramBot.CommandSender sender, String[] args) {
         String chatId = String.valueOf(sender.message.getChatId());
-        Optional<Config.Chat> chatConfig = TelegramBridge.config.getChats().stream().filter(chat -> chat.id.equals(chatId)).findFirst();
+        Optional<Config.Chat> chatConfig = TelegramBridge.config.chats.stream().filter(chat -> chat.id.equals(chatId)).findFirst();
         chatConfig.ifPresent(chat -> {
             if (chat.pinnedMessageId != null) {
                 sender.bot.unpinMessage(chatId, chat.pinnedMessageId);

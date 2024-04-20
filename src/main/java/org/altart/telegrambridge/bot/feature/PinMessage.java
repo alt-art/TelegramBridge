@@ -21,7 +21,7 @@ public final class PinMessage extends TelegramFeature {
         HashMap<String, String> values = new HashMap<>();
         values.put("players", players.isEmpty() ? "" : "\n" + playersNames);
         values.put("count", String.valueOf(players.size()));
-        return Format.string(TelegramBridge.translations.pinned, values);
+        return Format.string(TelegramBridge.config.pinned, values);
     }
 
     public void addPlayer(String player) {

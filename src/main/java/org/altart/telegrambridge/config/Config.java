@@ -22,6 +22,8 @@ public class Config {
     public boolean deathEvent = true;
     public boolean sleepEvent = false;
 
+    public String pinned = "Hey welcome to the chat!\nThere are %count% players online%players%";
+
     public Config() {
         load();
     }
@@ -49,12 +51,13 @@ public class Config {
                 }
             }
         } else {
-            TelegramBridge.log.warning("Config file not found, creating a new one...");
+            TelegramBridge.log.warning("Config file not found making a new one at %s" + configFile.getAbsolutePath());
             try {
                 FileConfiguration config = new YamlConfiguration();
                 config.set("botToken", botToken);
                 config.set("chats", Chat.chatsToMaps(chats));
                 config.save(configFile);
+                TelegramBridge.log.info("Config file created at %s" + configFile.getAbsolutePath());
             } catch (Exception e) {
                 TelegramBridge.log.severe("Error creating config file: " + e.getMessage());
                 Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

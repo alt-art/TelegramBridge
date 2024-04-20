@@ -25,7 +25,6 @@ public class Translations {
 
     public String online = "There are %count% players online%players%";
     public String time = "Time is %time% %emoji%\nDate is %month% %day%, Year %year%";
-    public String pinned = "Hey welcome to the chat!\nThere are %count% players online%players%";
 
     public Translations() {
         File translationsFile = new File(TelegramBridge.plugin.getDataFolder().getAbsoluteFile(), "translations.yml");

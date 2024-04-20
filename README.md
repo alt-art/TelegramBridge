@@ -30,6 +30,7 @@ To all the translation options check [`TRANSLATION.md`](./TRANSLATION.md)
 ## Telegram Commands
 
 - `/setthread` - When using threads, this command will set witch thread the events will be sent to
+- `/unsetthread` - Unset the thread that was set by `/setthread`
 - `/setpin` - Send a message to the chat and pin it which will show dynamically the online players (bot needs to have
   pin permission)
 - `/unsetpin` - Unpin the message that was pinned by `/setpin` (bot needs to have pin permission)

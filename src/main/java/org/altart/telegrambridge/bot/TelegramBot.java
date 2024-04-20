@@ -48,6 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         commands.put("/setpin", new SetPinCommand());
         commands.put("/unsetpin", new UnsetPinCommand());
         commands.put("/setthread", new SetThreadCommand());
+        commands.put("/unsetthread", new UnsetThreadCommand());
 
         features.add(pinMessageFeature);
         features.add(userAutocompleteFeature);

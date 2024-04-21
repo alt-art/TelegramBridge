@@ -1,10 +1,7 @@
 package org.altart.telegrambridge;
 
 import org.altart.telegrambridge.bot.TelegramBot;
-import org.altart.telegrambridge.commands.MentionCommand;
-import org.altart.telegrambridge.commands.MentionTabCompletion;
-import org.altart.telegrambridge.commands.ReloadCommand;
-import org.altart.telegrambridge.commands.ReplyCommand;
+import org.altart.telegrambridge.commands.*;
 import org.altart.telegrambridge.config.Config;
 import org.altart.telegrambridge.config.Translations;
 import org.altart.telegrambridge.events.ChatEvent;
@@ -56,10 +53,12 @@ public final class TelegramBridge extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
         try {
             Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());
-            Objects.requireNonNull(getCommand("tbreply")).setExecutor(new ReplyCommand());
-            PluginCommand markCommand = Objects.requireNonNull(getCommand("tbmention"));
-            markCommand.setExecutor(new MentionCommand());
-            markCommand.setTabCompleter(new MentionTabCompletion());
+            PluginCommand replyCommand = Objects.requireNonNull(getCommand("tbreply"));
+            replyCommand.setExecutor(new ReplyCommand());
+            replyCommand.setTabCompleter(new UserTabCompletion(2));
+            PluginCommand mentionCommand = Objects.requireNonNull(getCommand("tbmention"));
+            mentionCommand.setExecutor(new MentionCommand());
+            mentionCommand.setTabCompleter(new UserTabCompletion(1));
         } catch (NullPointerException e) {
             log.severe("Error registering command: " + e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

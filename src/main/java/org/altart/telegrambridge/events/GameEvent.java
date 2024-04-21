@@ -63,6 +63,9 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.advancementEvent) {
             String playerNick = event.getPlayer().getDisplayName();
             String advancementKey = event.getAdvancement().getKey().getKey().replace("/", ".");
+            if (advancementKey.startsWith("recipes.")) {
+                return;
+            }
             String advancementText = TranslationRegistry.INSTANCE.translate("advancements." + advancementKey + ".title");
             if (advancementText == null) {
                 advancementText = advancementKey;

@@ -21,11 +21,11 @@ telegram to minecraft and vice versa.
 
 ## Config
 
-To all the configuration options check [`CONFIG.md`](./CONFIG.md)
+To all the configuration options check [`CONFIG.md`](https://github.com/alt-art/TelegramBridge/blob/main/CONFIG.md)
 
 ## Translation
 
-To all the translation options check [`TRANSLATION.md`](./TRANSLATION.md)
+To all the translation options check [`TRANSLATION.md`](https://github.com/alt-art/TelegramBridge/blob/main/TRANSLATION.md)
 
 ## Telegram Commands
 

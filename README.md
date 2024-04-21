@@ -4,9 +4,9 @@ telegram to minecraft and vice versa.
 ## Usage
 
 - Install the plugin and restart your server this will create a config file for you to proceed
-- Create a bot with [`@BotFather`](https://t.me/BotFather) on telegram and disable “Group Privacy” on bot settings
-- Get your `chat id` from your group with the [`@ScanIDBot`](https://t.me/ScanIDBot)
-- Now you can change the configuration file `plugins/TelegramBridge/config.yml` to put your `chat id` and `bot token`
+- Create a bot with [@BotFather](https://t.me/BotFather) on telegram and disable “Group Privacy” on bot settings
+- Get your chat id from your group with the [@ScanIDBot](https://t.me/ScanIDBot)
+- Now you can change the configuration file `plugins/TelegramBridge/config.yml` to put your chat id and bot token
 - Restart your server
 
 ## Permissions
@@ -21,11 +21,11 @@ telegram to minecraft and vice versa.
 
 ## Config
 
-To all the configuration options check [`CONFIG.md`](https://github.com/alt-art/TelegramBridge/blob/main/CONFIG.md)
+To all the configuration options check [CONFIG.md](https://github.com/alt-art/TelegramBridge/blob/main/CONFIG.md)
 
 ## Translation
 
-To all the translation options check [`TRANSLATION.md`](https://github.com/alt-art/TelegramBridge/blob/main/TRANSLATION.md)
+To all the translation options check [TRANSLATION.md](https://github.com/alt-art/TelegramBridge/blob/main/TRANSLATION.md)
 
 ## Telegram Commands
 

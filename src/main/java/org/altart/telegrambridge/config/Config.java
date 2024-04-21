@@ -57,7 +57,7 @@ public class Config {
                 config.set("botToken", botToken);
                 config.set("chats", Chat.chatsToMaps(chats));
                 config.save(configFile);
-                TelegramBridge.log.info("Config file created at %s" + configFile.getAbsolutePath());
+                TelegramBridge.log.info("Config file created at " + configFile.getAbsolutePath());
             } catch (Exception e) {
                 TelegramBridge.log.severe("Error creating config file: " + e.getMessage());
                 Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

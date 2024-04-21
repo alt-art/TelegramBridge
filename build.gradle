@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     implementation 'org.telegram:telegrambots:6.9.7.1'
-    implementation 'org.jetbrains:annotations:24.0.0'
+    compileOnly 'org.jetbrains:annotations:24.1.0'
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 }
 

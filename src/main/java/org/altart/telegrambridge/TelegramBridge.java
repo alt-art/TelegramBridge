@@ -68,6 +68,8 @@ public final class TelegramBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        botSession.stop();
+        if (botSession != null) {
+            botSession.stop();
+        }
     }
 }

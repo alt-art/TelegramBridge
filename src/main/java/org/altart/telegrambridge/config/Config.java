@@ -20,6 +20,7 @@ public class Config {
 
     public boolean joinAndLeaveEvent = true;
     public boolean deathEvent = true;
+    public boolean advancementEvent = true;
     public boolean sleepEvent = false;
 
     public String pinned = "Hey welcome to the chat!\nThere are %count% players online%players%";

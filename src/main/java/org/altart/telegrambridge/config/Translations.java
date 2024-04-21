@@ -16,6 +16,7 @@ public class Translations {
     public String join = "Player %playername% joined the game!";
     public String leave = "Player %playername% left the game!";
     public String death = "Player %playername% died! %deathmessage%";
+    public String advancement = "Player %playername% made an advancement! %advancement%";
     public String sleep = "Player %playername% went to bed!";
 
     public String chatMessage = "[%playername%]: %message%";

@@ -1,16 +1,19 @@
 package org.altart.telegrambridge.events;
 
 
+import net.md_5.bungee.chat.TranslationRegistry;
 import org.altart.telegrambridge.TelegramBridge;
 import org.altart.telegrambridge.utils.Format;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GameEvent implements Listener {
     @EventHandler
@@ -51,6 +54,27 @@ public class GameEvent implements Listener {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.sleepEvent) {
             String playerNick = event.getPlayer().getDisplayName();
             String message = Format.string(TelegramBridge.translations.sleep, "playername", playerNick);
+            TelegramBridge.telegramBot.broadcastMessage(message);
+        }
+    }
+
+    @EventHandler
+    public void onAdvancement(PlayerAdvancementDoneEvent event) {
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.advancementEvent) {
+            String playerNick = event.getPlayer().getDisplayName();
+            String advancementKey = event.getAdvancement().getKey().getKey().replace("/", ".");
+            String advancementText = TranslationRegistry.INSTANCE.translate("advancements." + advancementKey + ".title");
+            if (advancementText == null) {
+                advancementText = advancementKey;
+            }
+            String advancementDescription = TranslationRegistry.INSTANCE.translate("advancements." + advancementKey + ".description");
+            if (advancementDescription != null) {
+                advancementText += ": " + advancementDescription;
+            }
+            HashMap<String, String> values = new HashMap<>();
+            values.put("playername", playerNick);
+            values.put("advancement", advancementText);
+            String message = Format.string(TelegramBridge.translations.advancement, values);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }

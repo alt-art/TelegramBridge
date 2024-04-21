@@ -17,6 +17,8 @@ join: 'Player %playername% joined the game!'
 leave: 'Player %playername% left the game!'
 # When a player dies
 death: 'Player %playername% died! %deathmessage%'
+# When a player makes an achievement
+advancement: 'Player %playername% made an advancement! %advancement%'
 # When a player sleeps
 sleep: 'Player %playername% went to bed!'
 

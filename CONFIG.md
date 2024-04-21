@@ -26,6 +26,8 @@ sendToTelegram: true
 joinAndLeaveEvent: true
 # Log player death in telegram chat
 deathEvent: true
+# Log player advancement in telegram chat
+advancementEvent: true
 # Log player sleep in telegram chat
 sleepEvent: false
 ```

@@ -3,7 +3,7 @@
 # Nome dos meses para o comando /time
 months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ]
 # Tipos de mídia para o tipo de mídia que é enviada para o chat
-mediaTypes: [ 'uma imagem', 'um vídeo', 'um documento', 'um áudio', 'um sticker', 'um áudio', 'um contato', 'uma localização', 'uma enquete', 'uma mídia' ]
+mediaTypes: [ 'uma imagem', 'um vídeo', 'um documento', 'uma musica', 'um áudio', 'um sticker', 'um contato', 'uma localização', 'uma enquete', 'uma mídia' ]
 
 # Quando um jogador entra no servidor
 join: '%playername% entrou no jogo!'

@@ -13,14 +13,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class GameEvent implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.translations.join, "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.get().join, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
             TelegramBridge.telegramBot.pinMessageFeature.addPlayer(event.getPlayer().getDisplayName());
         }
@@ -30,7 +29,7 @@ public class GameEvent implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.translations.leave, "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.get().leave, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
             TelegramBridge.telegramBot.pinMessageFeature.removePlayer(event.getPlayer().getDisplayName());
         }
@@ -44,7 +43,7 @@ public class GameEvent implements Listener {
             HashMap<String, String> values = new HashMap<>();
             values.put("playername", playerNick);
             values.put("deathmessage", deathMessage);
-            String message = Format.string(TelegramBridge.translations.death, values);
+            String message = Format.string(TelegramBridge.translations.get().death, values);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }
@@ -53,7 +52,7 @@ public class GameEvent implements Listener {
     public void onPlayerAsleep(PlayerBedEnterEvent event) {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.sleepEvent) {
             String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.translations.sleep, "playername", playerNick);
+            String message = Format.string(TelegramBridge.translations.get().sleep, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }
@@ -77,7 +76,7 @@ public class GameEvent implements Listener {
             HashMap<String, String> values = new HashMap<>();
             values.put("playername", playerNick);
             values.put("advancement", advancementText);
-            String message = Format.string(TelegramBridge.translations.advancement, values);
+            String message = Format.string(TelegramBridge.translations.get().advancement, values);
             TelegramBridge.telegramBot.broadcastMessage(message);
         }
     }

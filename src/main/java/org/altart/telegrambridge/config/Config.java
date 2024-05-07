@@ -10,7 +10,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@SuppressWarnings("unused")
 public class Config {
     public String botToken = "YOUR_BOT_TOKEN";
     public List<Chat> chats = Collections.singletonList(new Chat("YOUR_CHAT_ID", null, null));
@@ -22,6 +21,8 @@ public class Config {
     public boolean deathEvent = true;
     public boolean advancementEvent = true;
     public boolean sleepEvent = false;
+
+    public String lang = "en";
 
     public String pinned = "Hey welcome to the chat!\nThere are %count% players online%players%";
 
@@ -71,6 +72,7 @@ public class Config {
             FileConfiguration config = new YamlConfiguration();
             config.set("botToken", botToken);
             config.set("chats", Chat.chatsToMaps(chats));
+            config.set("lang", lang);
             config.save(configFile);
         } catch (Exception e) {
             TelegramBridge.log.severe("Error saving config: " + e.getMessage());
@@ -85,6 +87,11 @@ public class Config {
                 break;
             }
         }
+        save();
+    }
+
+    public void setLang(@NotNull String lang) {
+        this.lang = lang;
         save();
     }
 

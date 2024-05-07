@@ -29,3 +29,8 @@ telegramReply: '- §bОтвет §7%user% -\n'
 online: 'На сервере %count% игроков онлайн%players%'
 # Команда /time
 time: '%emoji% Текущее время: %time%\nДата: %month% %day% %year%'
+
+# Кнопка ответа в чате
+replyButton: 'Ответить'
+# Сообщение при наведении на кнопку ответа
+replyHint: 'Нажмите, чтобы ответить'

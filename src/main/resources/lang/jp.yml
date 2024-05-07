@@ -29,3 +29,8 @@ telegramReply: '- §b%user% に返信: %message%§r -\n'
 online: 'オンラインのプレイヤーは %count% 人です%players%'
 # /time コマンド
 time: '現在の時刻は %time% です %emoji%\n日付は %year% 年 %month% %day% 日です'
+
+# チャット内の返信ボタン
+replyButton: '返信'
+# 返信ボタンにマウスを合わせたときのメッセージ
+replyHint: 'クリックして返信'

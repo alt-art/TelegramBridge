@@ -42,7 +42,6 @@ public class Translations {
     }
 
     public Translation get(@Nullable String lang) {
-        TelegramBridge.log.info("Getting translation for " + lang);
         if (lang == null) {
             return get(defaultLang);
         }
@@ -78,6 +77,9 @@ public class Translations {
 
         public String online;
         public String time;
+
+        public String replyButton;
+        public String replyHint;
 
         private Translation(@Nullable File translationsFile) {
             if (translationsFile != null && translationsFile.exists()) {

@@ -29,3 +29,8 @@ telegramReply: '- §bresposta a §7%user%: %message%§r -\n'
 online: 'Há %count% jogadores online%players%'
 # Comando /time
 time: 'O tempo é %time% %emoji%\nData é %month% %day%, Ano %year%'
+
+# Botão de resposta no chat
+replyButton: 'Responder'
+# Mensagem ao colocar o mouse sobre o botão de resposta
+replyHint: 'Clique para responder'

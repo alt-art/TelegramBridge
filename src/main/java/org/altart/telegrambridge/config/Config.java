@@ -72,6 +72,7 @@ public class Config {
             FileConfiguration config = new YamlConfiguration();
             config.set("botToken", botToken);
             config.set("chats", Chat.chatsToMaps(chats));
+            config.set("lang", lang);
             config.save(configFile);
         } catch (Exception e) {
             TelegramBridge.log.severe("Error saving config: " + e.getMessage());

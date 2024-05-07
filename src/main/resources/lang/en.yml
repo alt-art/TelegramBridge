@@ -29,3 +29,8 @@ telegramReply: '- §breply to §7%user%: %message%§r -\n'
 online: 'There are %count% players online%players%'
 # /time command
 time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
+
+# Reply button in chat
+replyButton: 'Reply'
+# Message when hovering over the reply button
+replyHint: 'Click to reply'

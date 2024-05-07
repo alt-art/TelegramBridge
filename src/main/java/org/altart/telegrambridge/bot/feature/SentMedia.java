@@ -22,7 +22,6 @@ public class SentMedia extends TelegramFeature {
 
     @Override
     public void onUpdateReceived(@NotNull Update update) {
-
         Message message = update.getMessage();
         if (isMedia(message)) {
             String username = message.getFrom().getUserName();
@@ -34,9 +33,9 @@ public class SentMedia extends TelegramFeature {
                         HashMap<String, String> values = new HashMap<>();
                         values.put("user", username);
                         values.put("caption", caption);
-                        // TODO: Implement individual translation for each player
-                        values.put("type", determineMediaType(message, null));
-                        String text = Format.string(TelegramBridge.translations.get().telegramMedia, values);
+                        String lang = TelegramBridge.database.getLang(player.getUniqueId());
+                        values.put("type", determineMediaType(message, lang));
+                        String text = Format.string(TelegramBridge.translations.get(lang).telegramMedia, values);
                         player.sendMessage(text);
                     }
                 }

@@ -5,6 +5,7 @@ import org.altart.telegrambridge.TelegramBridge;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class ConfigCommand implements CommandExecutor {
@@ -21,6 +22,24 @@ public class ConfigCommand implements CommandExecutor {
             try {
                 TelegramBridge.translations.setDefaultLang(args[1]);
                 TelegramBridge.config.setLang(args[1]);
+            } catch (Exception e) {
+                sender.sendMessage(e.getMessage());
+                return false;
+            }
+        }
+
+        if (args[0].equals("lang")) {
+            if (!sender.hasPermission(Permissions.TRANSLATION_CONFIG.getString())) {
+                sender.sendMessage("You do not have permission to use this command.");
+                return true;
+            }
+            try {
+                if (sender instanceof Player) {
+                    TelegramBridge.database.setLang(((Player) sender).getUniqueId(), args[1]);
+                } else {
+                    sender.sendMessage("This command can only be used by players.");
+                    return true;
+                }
             } catch (Exception e) {
                 sender.sendMessage(e.getMessage());
                 return false;

@@ -48,8 +48,8 @@ public class MessageListener extends TelegramFeature {
         String message = messageInfo.message;
         for (Player player : Bukkit.getOnlinePlayers()) {
             TextComponent finalComponent = new TextComponent("");
-            // TODO: Implement individual translation for each player
-            finalComponent.addExtra(replyComponent(username, message, null));
+            String lang = TelegramBridge.database.getLang(player.getUniqueId());
+            finalComponent.addExtra(replyComponent(username, message, lang));
             TextComponent component = new TextComponent(text);
             finalComponent.addExtra(component);
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
@@ -71,16 +71,16 @@ public class MessageListener extends TelegramFeature {
                     BaseComponent finalComponent = new TextComponent("");
                     HashMap<String, String> values = makeMessageMap(username, text);
 
+                    String lang = TelegramBridge.database.getLang(player.getUniqueId());
+
                     Message reply = message.getReplyToMessage();
                     if (reply != null && reply.hasText()) {
                         String replyUsername = reply.getFrom().getUserName();
                         String replyMessage = reply.getText();
-                        // TODO: Implement individual translation for each player
-                        finalComponent.addExtra(replyComponent(replyUsername, replyMessage, null));
+                        finalComponent.addExtra(replyComponent(replyUsername, replyMessage, lang));
                     }
 
-                    // TODO: Implement individual translation for each player
-                    TextComponent component = new TextComponent(Format.string(TelegramBridge.translations.get().telegramMessage, values));
+                    TextComponent component = new TextComponent(Format.string(TelegramBridge.translations.get(lang).telegramMessage, values));
                     finalComponent.addExtra(component);
 
                     if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
@@ -92,15 +92,16 @@ public class MessageListener extends TelegramFeature {
                         }
                         messagesInfo.put(uuid, new MessageInfo(chatId, messageId, message.getText(), username));
 
-                        TextComponent replyButtonComponent = new TextComponent(" [Reply]");
+                        TextComponent replyButtonComponent = new TextComponent(" [" + TelegramBridge.translations.get(lang).replyButton + "]");
                         replyButtonComponent.setColor(ChatColor.AQUA);
                         replyButtonComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tbr " + uuid + " "));
 
+                        String replyHint = TelegramBridge.translations.get(lang).replyHint;
                         try {
                             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
-                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to reply")));
+                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(replyHint)));
                         } catch (ClassNotFoundException ignored) {
-                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to reply").create()));
+                            replyButtonComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(replyHint).create()));
                         }
 
                         finalComponent.addExtra(replyButtonComponent);
@@ -114,7 +115,7 @@ public class MessageListener extends TelegramFeature {
     @SuppressWarnings("deprecation")
     private static TextComponent replyComponent(String username, String message, @Nullable String lang) {
         HashMap<String, String> replyValues = makeMessageMap(username, shrinkReplyText(message));
-        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.translations.get().telegramReply, replyValues));
+        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.translations.get(lang).telegramReply, replyValues));
         try {
             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
             replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));

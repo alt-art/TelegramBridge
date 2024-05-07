@@ -126,11 +126,11 @@ public class Config {
                 String id = (String) chat.get("id");
                 Integer thread = null;
                 if (chat.get("thread") != null) {
-                    thread = (int) chat.get("thread");
+                    thread = Integer.valueOf((String) chat.get("thread"));
                 }
                 Integer pinnedMessageId = null;
                 if (chat.get("pinnedMessageId") != null) {
-                    pinnedMessageId = (int) chat.get("pinnedMessageId");
+                    pinnedMessageId = Integer.valueOf((String) chat.get("pinnedMessageId"));
                 }
                 chats.add(new Chat(id, thread, pinnedMessageId));
             }

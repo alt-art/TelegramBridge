@@ -11,13 +11,16 @@ telegram to minecraft and vice versa.
 
 ## Permissions
 
-| key                             | Description                                                            | Default |
-|---------------------------------|------------------------------------------------------------------------|---------|
-| telegrambridge.receive          | If player should receive message from telegram                         | true    |
-| telegrambridge.send             | If message of the player  should be sent to telegram                   | true    |
-| telegrambridge.commands.reply   | Ability to reply to messages from telegram on minecraft                | true    |
-| telegrambridge.commands.mention | Command that make auto complete on users from telegram to mention them | true    |
-| telegrambridge.commands.reload  | Allows the user to reload the TelegramBridge configuration             | op      |
+| key                                             | Description                                                               | Default |
+|-------------------------------------------------|---------------------------------------------------------------------------|---------|
+| telegrambridge.receive                          | If player should receive message from telegram                            | true    |
+| telegrambridge.send                             | If message of the player  should be sent to telegram                      | true    |
+| telegrambridge.commands.reply                   | Ability to reply to messages from telegram on minecraft                   | true    |
+| telegrambridge.commands.mention                 | Command that make auto complete on users from telegram to mention them    | true    |
+| telegrambridge.commands.reload                  | Allows the user to reload the TelegramBridge configuration                | op      |
+| telegrambridge.commands.config                  | Allows the user to configure the TelegramBridge                           | true    |
+| telegrambridge.commands.config.default-language | Allows the user to set the language that will be used in telegram channel | op      |
+| telegrambridge.commands.config.language         | Allows the user to set your own language                                  | true    |
 
 ## Config
 
@@ -25,7 +28,8 @@ To all the configuration options check [CONFIG.md](https://github.com/alt-art/Te
 
 ## Translation
 
-To all the translation options check [TRANSLATION.md](https://github.com/alt-art/TelegramBridge/blob/main/TRANSLATION.md)
+To all the translation options
+check [TRANSLATION.md](https://github.com/alt-art/TelegramBridge/blob/main/TRANSLATION.md)
 
 ## Telegram Commands
 

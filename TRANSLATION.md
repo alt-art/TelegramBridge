@@ -1,38 +1,27 @@
 # Translation
 
-You can change the language or format of the messages that are sent to the telegram chat by creating a
-file `plugins/TelegramBridge/translations.yml`.
+This plugin comes with translations for some languages, but if the language you want is not available, you can help by translating the plugin.
 
-The default values are:
+## Available languages
 
-```yml
-# Month names for the /time command
-months: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
-# Media types for the type of media that is sent to the chat
-mediaTypes: [ 'an image', 'a video', 'a document', 'an audio', 'a voice', 'a sticker', 'a contact', 'a location', 'a poll', 'a media' ]
+- English (en)
+- Spanish (es)
+- Japanese (jp)
+- Portuguese (pt)
+- Russian (ru)
 
-# When a player joins the server
-join: 'Player %playername% joined the game!'
-# When a player leaves the server
-leave: 'Player %playername% left the game!'
-# When a player dies
-death: 'Player %playername% died! %deathmessage%'
-# When a player makes an achievement
-advancement: 'Player %playername% made an advancement! %advancement%'
-# When a player sleeps
-sleep: 'Player %playername% went to bed!'
+## How to translate
 
-# When a minecraft player sends a message
-chatMessage: '[%playername%]: %message%'
-# When a telegram user sends a message
-telegramMessage: '§7[§bTelegram§7] §f[%user%] %message%'
-# When a telegram user sends a media
-telegramMedia: '§7[§bTelegram§7] §f[%user%] sent %type%%caption%'
-# When player or telegram user sends a reply
-telegramReply: '- §breply to §7%user%: %message%§r -\n'
+1. Fork this repository
 
-# /online command
-online: 'There are %count% players online%players%'
-# /time command
-time: 'Time is %time% %emoji%\nDate is %month% %day%, Year %year%'
-```
+2. Create a new file in the `src/main/resources/lang` directory with the name of the language code you want to translate to. For example, if you want to translate to French, create a file named `fr.yml`.
+
+3. Copy the contents of the `en.yml` file to the new file you created.
+
+4. Translate the values of the keys to the language you want.
+
+5. Submit a pull request with the new file.
+
+## Changing format for your own purposes
+
+If the format of the texts does not suit your needs, you can change it. Just edit the translation files in the `TelegramBridge/lang` directory.

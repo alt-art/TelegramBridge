@@ -31,7 +31,7 @@ public final class TelegramBridge extends JavaPlugin {
         plugin = this;
         log = getLogger();
         config = new Config();
-        translations = new Translations();
+        translations = new Translations(config.lang);
 
         if (Objects.equals(config.botToken, "YOUR_BOT_TOKEN") || Objects.equals(config.chats.get(0).id, "YOUR_CHAT_ID")) {
             log.severe("Please set your bot token and chat id in the config file");
@@ -59,6 +59,9 @@ public final class TelegramBridge extends JavaPlugin {
             PluginCommand mentionCommand = Objects.requireNonNull(getCommand("tbmention"));
             mentionCommand.setExecutor(new MentionCommand());
             mentionCommand.setTabCompleter(new UserTabCompletion(1));
+            PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
+            configCommand.setExecutor(new ConfigCommand());
+            configCommand.setTabCompleter(new ConfigTabCompletion());
         } catch (NullPointerException e) {
             log.severe("Error registering command: " + e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

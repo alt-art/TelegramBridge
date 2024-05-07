@@ -1,0 +1,31 @@
+# 著者: alt-art May be wrong, please correct me if I'm wrong.
+
+# /time コマンドの月の名前
+months: [ '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月' ]
+# チャットに送信されるメディアの種類
+mediaTypes: [ '画像', 'ビデオ', 'ドキュメント', 'オーディオ', 'ボイス', 'ステッカー', '連絡先', '位置情報', '投票', 'メディア' ]
+
+# プレイヤーがサーバーに参加したとき
+join: '%playername% がゲームに参加しました！'
+# プレイヤーがサーバーから退出したとき
+leave: '%playername% がゲームから退出しました！'
+# プレイヤーが死亡したとき
+death: '%playername% が死亡しました！ %deathmessage%'
+# プレイヤーが実績を達成したとき
+advancement: '%playername% が実績を達成しました！ %advancement%'
+# プレイヤーが寝たとき
+sleep: '%playername% が寝ました！'
+
+# Minecraft プレイヤーがメッセージを送信したとき
+chatMessage: '[%playername%]: %message%'
+# Telegram ユーザーがメッセージを送信したとき
+telegramMessage: '§7[§bTelegram§7] §f[%user%] %message%'
+# Telegram ユーザーがメディアを送信したとき
+telegramMedia: '§7[§bTelegram§7] §f[%user%] が %type% を送信しました。%caption%'
+# プレイヤーまたは Telegram ユーザーが返信を送信したとき
+telegramReply: '- §b%user% に返信: %message%§r -\n'
+
+# /online コマンド
+online: 'オンラインのプレイヤーは %count% 人です%players%'
+# /time コマンド
+time: '現在の時刻は %time% です %emoji%\n日付は %year% 年 %month% %day% 日です'

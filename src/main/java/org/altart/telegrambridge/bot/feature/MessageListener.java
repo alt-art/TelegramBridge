@@ -16,6 +16,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -45,11 +46,12 @@ public class MessageListener extends TelegramFeature {
         telegramBot.reply(text, chatId, messageId);
         String username = messageInfo.username;
         String message = messageInfo.message;
-        TextComponent finalComponent = new TextComponent("");
-        finalComponent.addExtra(replyComponent(username, message));
-        TextComponent component = new TextComponent(text);
-        finalComponent.addExtra(component);
         for (Player player : Bukkit.getOnlinePlayers()) {
+            TextComponent finalComponent = new TextComponent("");
+            // TODO: Implement individual translation for each player
+            finalComponent.addExtra(replyComponent(username, message, null));
+            TextComponent component = new TextComponent(text);
+            finalComponent.addExtra(component);
             if (player.hasPermission(Permissions.RECEIVE.getString())) {
                 player.spigot().sendMessage(finalComponent);
             }
@@ -73,10 +75,12 @@ public class MessageListener extends TelegramFeature {
                     if (reply != null && reply.hasText()) {
                         String replyUsername = reply.getFrom().getUserName();
                         String replyMessage = reply.getText();
-                        finalComponent.addExtra(replyComponent(replyUsername, replyMessage));
+                        // TODO: Implement individual translation for each player
+                        finalComponent.addExtra(replyComponent(replyUsername, replyMessage, null));
                     }
 
-                    TextComponent component = new TextComponent(Format.string(TelegramBridge.translations.telegramMessage, values));
+                    // TODO: Implement individual translation for each player
+                    TextComponent component = new TextComponent(Format.string(TelegramBridge.translations.get().telegramMessage, values));
                     finalComponent.addExtra(component);
 
                     if (player.hasPermission(Permissions.REPLY_COMMAND.getString())) {
@@ -108,9 +112,9 @@ public class MessageListener extends TelegramFeature {
     }
 
     @SuppressWarnings("deprecation")
-    private static TextComponent replyComponent(String username, String message) {
+    private static TextComponent replyComponent(String username, String message, @Nullable String lang) {
         HashMap<String, String> replyValues = makeMessageMap(username, shrinkReplyText(message));
-        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.translations.telegramReply, replyValues));
+        TextComponent replyComponent = new TextComponent(Format.string(TelegramBridge.translations.get().telegramReply, replyValues));
         try {
             Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
             replyComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(message)));

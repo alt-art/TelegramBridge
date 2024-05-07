@@ -11,6 +11,10 @@ commands:
     description: Reloads the TelegramBridge configuration
     usage: /tbreload
     permission: telegrambridge.commands.reload
+  tbconfig:
+    description: Used to configure the TelegramBridge
+    usage: /tbconfig
+    permission: telegrambridge.commands.config
   tbreply:
     description: Reply using message_id to a message in telegram chat
     usage: /tbreply <message_id> <message>
@@ -25,6 +29,12 @@ commands:
 permissions:
     telegrambridge.commands.reload:
         description: Allows the user to reload the TelegramBridge configuration
+        default: op
+    telegrambridge.commands.config:
+        description: Allows the user to configure the TelegramBridge
+        default: true
+    telegrambridge.commands.config.default-language:
+        description: Allows the user to set the default language for the TelegramBridge
         default: op
     telegrambridge.commands.reply:
         description: Allows the user to reply to a message in telegram chat

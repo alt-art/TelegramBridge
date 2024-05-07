@@ -4,42 +4,97 @@ import org.altart.telegrambridge.TelegramBridge;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
+import javax.annotation.Nullable;
+import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.*;
 
-@SuppressWarnings("unused")
 public class Translations {
-    public String[] months = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    public String[] mediaTypes = new String[]{"an image", "a video", "a document", "an audio", "a voice", "a sticker", "a contact", "a location", "a poll", "a media"};
+    private final HashMap<String, Translation> translations = new HashMap<>();
 
-    public String join = "Player %playername% joined the game!";
-    public String leave = "Player %playername% left the game!";
-    public String death = "Player %playername% died! %deathmessage%";
-    public String advancement = "Player %playername% made an advancement! %advancement%";
-    public String sleep = "Player %playername% went to bed!";
+    private final Set<String> loadedLanguages = new HashSet<>(Arrays.asList("en", "es", "jp", "pt", "ru"));
 
-    public String chatMessage = "[%playername%]: %message%";
-    public String telegramMessage = "§7[§bTelegram§7] §f[%user%] %message%";
-    public String telegramMedia = "§7[§bTelegram§7] §f[%user%] sent %type%%caption%";
-    public String telegramReply = "- §breply to §7%user%: %message%§r -\n";
+    private String defaultLang = "en";
 
-    public String online = "There are %count% players online%players%";
-    public String time = "Time is %time% %emoji%\nDate is %month% %day%, Year %year%";
+    public Translations(@Nullable String defaultLang) {
+        if (defaultLang != null) {
+            this.defaultLang = defaultLang;
+        }
 
-    public Translations() {
-        File translationsFile = new File(TelegramBridge.plugin.getDataFolder().getAbsoluteFile(), "translations.yml");
-        if (translationsFile.exists()) {
-            FileConfiguration translations = YamlConfiguration.loadConfiguration(translationsFile);
-            Field[] fields = this.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    if (translations.contains(field.getName()) && field.getType().equals(String.class)) {
-                        field.set(this, translations.get(field.getName()));
+        File translationsFolder = new File(TelegramBridge.plugin.getDataFolder(), "lang");
+        if (translationsFolder.mkdirs()) {
+            for (String lang : loadedLanguages) {
+                TelegramBridge.plugin.saveResource("lang/" + lang + ".yml", false);
+            }
+        }
+        File[] translationFiles = translationsFolder.listFiles();
+        if (translationFiles != null) {
+            for (File translationFile : translationFiles) {
+                String lang = translationFile.getName().replace(".yml", "");
+                loadedLanguages.add(lang);
+                translations.put(lang, new Translation(translationFile));
+            }
+        }
+    }
+
+    public Translation get() {
+        return get(defaultLang);
+    }
+
+    public Translation get(@Nullable String lang) {
+        TelegramBridge.log.info("Getting translation for " + lang);
+        if (lang == null) {
+            return get(defaultLang);
+        }
+        return translations.getOrDefault(lang, new Translation(null));
+    }
+
+    public void setDefaultLang(String lang) throws Exception {
+        if (loadedLanguages.contains(lang)) {
+            defaultLang = lang;
+        } else {
+            throw new Exception("Language not loaded: " + lang);
+        }
+    }
+
+    public List<String> getLoadedLanguages() {
+        return new ArrayList<>(loadedLanguages);
+    }
+
+    public static class Translation {
+        public List<String> months;
+        public List<String> mediaTypes;
+
+        public String join;
+        public String leave;
+        public String death;
+        public String advancement;
+        public String sleep;
+
+        public String chatMessage;
+        public String telegramMessage;
+        public String telegramMedia;
+        public String telegramReply;
+
+        public String online;
+        public String time;
+
+        private Translation(@Nullable File translationsFile) {
+            if (translationsFile != null && translationsFile.exists()) {
+                FileConfiguration translations = YamlConfiguration.loadConfiguration(translationsFile);
+                Field[] fields = this.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    try {
+                        if (translations.contains(field.getName()) && field.getType().equals(String.class)) {
+                            field.set(this, translations.get(field.getName()));
+                        }
+                        if (translations.contains(field.getName()) && field.getType().equals(List.class)) {
+                            field.set(this, translations.getStringList(field.getName()));
+                        }
+                    } catch (Exception e) {
+                        TelegramBridge.log.severe("Error loading translations: " + e.getMessage());
+                        Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
                     }
-                } catch (Exception e) {
-                    TelegramBridge.log.severe("Error loading translations: " + e.getMessage());
-                    Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
                 }
             }
         }

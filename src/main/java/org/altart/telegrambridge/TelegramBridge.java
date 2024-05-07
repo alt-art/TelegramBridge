@@ -4,6 +4,7 @@ import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.commands.*;
 import org.altart.telegrambridge.config.Config;
 import org.altart.telegrambridge.config.Translations;
+import org.altart.telegrambridge.database.SQLite;
 import org.altart.telegrambridge.events.ChatEvent;
 import org.altart.telegrambridge.events.GameEvent;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ public final class TelegramBridge extends JavaPlugin {
     public static Logger log;
     public static Config config;
     public static Translations translations;
+    public static SQLite database;
 
     public static TelegramBot telegramBot;
     private BotSession botSession;
@@ -31,7 +33,8 @@ public final class TelegramBridge extends JavaPlugin {
         plugin = this;
         log = getLogger();
         config = new Config();
-        translations = new Translations();
+        translations = new Translations(config.lang);
+        database = new SQLite();
 
         if (Objects.equals(config.botToken, "YOUR_BOT_TOKEN") || Objects.equals(config.chats.get(0).id, "YOUR_CHAT_ID")) {
             log.severe("Please set your bot token and chat id in the config file");
@@ -59,6 +62,9 @@ public final class TelegramBridge extends JavaPlugin {
             PluginCommand mentionCommand = Objects.requireNonNull(getCommand("tbmention"));
             mentionCommand.setExecutor(new MentionCommand());
             mentionCommand.setTabCompleter(new UserTabCompletion(1));
+            PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
+            configCommand.setExecutor(new ConfigCommand());
+            configCommand.setTabCompleter(new ConfigTabCompletion());
         } catch (NullPointerException e) {
             log.severe("Error registering command: " + e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
@@ -67,6 +73,7 @@ public final class TelegramBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        database.close();
         if (botSession != null) {
             botSession.stop();
         }

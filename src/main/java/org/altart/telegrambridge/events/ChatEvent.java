@@ -21,7 +21,7 @@ public class ChatEvent implements Listener {
                 HashMap<String, String> values = new HashMap<>();
                 values.put("playername", playerNick);
                 values.put("message", message);
-                String text = Format.string(TelegramBridge.translations.chatMessage, values);
+                String text = Format.string(TelegramBridge.translations.get().chatMessage, values);
                 TelegramBridge.telegramBot.broadcastMessage(text);
             }
         }

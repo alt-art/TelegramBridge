@@ -1,0 +1,36 @@
+# Autor: @alt-art
+
+# Nombre de los meses para el comando /time
+months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ]
+# Tipos de medios para el tipo de medios que se envían al chat
+mediaTypes: [ 'una imagen', 'un video', 'un documento', 'un audio', 'una voz', 'un sticker', 'un contacto', 'una ubicación', 'una encuesta', 'un medio' ]
+
+# Cuando un jugador entra al servidor
+join: '%playername% se unió al juego!'
+# Cuando un jugador sale del servidor
+leave: '%playername% dejó el juego!'
+# Cuando un jugador muere
+death: '%playername% murió! %deathmessage%'
+# Cuando un jugador hace un logro
+advancement: '%playername% hizo un logro! %advancement%'
+# Cuando un jugador duerme
+sleep: '%playername% se fue a dormir!'
+
+# Cuando un jugador de Minecraft envía un mensaje
+chatMessage: '[%playername%]: %message%'
+# Cuando un usuario de Telegram envía un mensaje
+telegramMessage: '§7[§bTelegram§7] §f[%user%] %message%'
+# Cuando un usuario de Telegram envía un medio
+telegramMedia: '§7[§bTelegram§7] §f[%user%] envió %type%%caption%'
+# Cuando un jugador o usuario de Telegram envía una respuesta
+telegramReply: '- §bresponder a §7%user%: %message%§r -\n'
+
+# Comando /online
+online: 'Hay %count% jugadores en línea%players%'
+# Comando /time
+time: 'La hora es %time% %emoji%\nFecha es %month% %day%, Año %year%'
+
+# Botón de respuesta en el chat
+replyButton: 'Responder'
+# Mensaje al pasar el mouse sobre el botón de respuesta
+replyHint: 'Haga clic para responder'

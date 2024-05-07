@@ -8,6 +8,7 @@ import org.altart.telegrambridge.utils.Format;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -21,7 +22,6 @@ public class SentMedia extends TelegramFeature {
 
     @Override
     public void onUpdateReceived(@NotNull Update update) {
-
         Message message = update.getMessage();
         if (isMedia(message)) {
             String username = message.getFrom().getUserName();
@@ -33,8 +33,9 @@ public class SentMedia extends TelegramFeature {
                         HashMap<String, String> values = new HashMap<>();
                         values.put("user", username);
                         values.put("caption", caption);
-                        values.put("type", determineMediaType(message));
-                        String text = Format.string(TelegramBridge.translations.telegramMedia, values);
+                        String lang = TelegramBridge.database.getLang(player.getUniqueId());
+                        values.put("type", determineMediaType(message, lang));
+                        String text = Format.string(TelegramBridge.translations.get(lang).telegramMedia, values);
                         player.sendMessage(text);
                     }
                 }
@@ -46,16 +47,16 @@ public class SentMedia extends TelegramFeature {
         return message.hasPhoto() || message.hasVideo() || message.hasDocument() || message.hasAudio() || message.hasVoice() || message.hasSticker() || message.hasContact() || message.hasLocation() || message.hasPoll();
     }
 
-    private String determineMediaType(@NotNull Message message) {
-        if (message.hasPhoto()) return TelegramBridge.translations.mediaTypes[0];
-        if (message.hasVideo()) return TelegramBridge.translations.mediaTypes[1];
-        if (message.hasDocument()) return TelegramBridge.translations.mediaTypes[2];
-        if (message.hasAudio()) return TelegramBridge.translations.mediaTypes[3];
-        if (message.hasVoice()) return TelegramBridge.translations.mediaTypes[4];
-        if (message.hasSticker()) return TelegramBridge.translations.mediaTypes[5];
-        if (message.hasContact()) return TelegramBridge.translations.mediaTypes[6];
-        if (message.hasLocation()) return TelegramBridge.translations.mediaTypes[7];
-        if (message.hasPoll()) return TelegramBridge.translations.mediaTypes[8];
-        return TelegramBridge.translations.mediaTypes[9];
+    private String determineMediaType(@NotNull Message message, @Nullable String lang) {
+        if (message.hasPhoto()) return TelegramBridge.translations.get(lang).mediaTypes.get(0);
+        if (message.hasVideo()) return TelegramBridge.translations.get(lang).mediaTypes.get(1);
+        if (message.hasDocument()) return TelegramBridge.translations.get(lang).mediaTypes.get(2);
+        if (message.hasAudio()) return TelegramBridge.translations.get(lang).mediaTypes.get(3);
+        if (message.hasVoice()) return TelegramBridge.translations.get(lang).mediaTypes.get(4);
+        if (message.hasSticker()) return TelegramBridge.translations.get(lang).mediaTypes.get(5);
+        if (message.hasContact()) return TelegramBridge.translations.get(lang).mediaTypes.get(6);
+        if (message.hasLocation()) return TelegramBridge.translations.get(lang).mediaTypes.get(7);
+        if (message.hasPoll()) return TelegramBridge.translations.get(lang).mediaTypes.get(8);
+        return TelegramBridge.translations.get(lang).mediaTypes.get(9);
     }
 }

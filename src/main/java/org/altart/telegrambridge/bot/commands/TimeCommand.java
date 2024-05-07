@@ -27,7 +27,7 @@ public class TimeCommand extends TelegramCommandExecutor {
 
         HashMap<String, String> values = makeTimeMap(time, emoji, day, month, year);
 
-        String response = Format.string(TelegramBridge.translations.time, values);
+        String response = Format.string(TelegramBridge.translations.get().time, values);
         sender.sendMessage(response);
     }
 
@@ -36,7 +36,7 @@ public class TimeCommand extends TelegramCommandExecutor {
         values.put("time", time);
         values.put("emoji", emoji);
         values.put("day", String.valueOf(day));
-        values.put("month", TelegramBridge.translations.months[month]);
+        values.put("month", TelegramBridge.translations.get().months.get(month));
         values.put("year", String.valueOf(year));
         values.put("month_number", String.valueOf(month + 1));
         return values;

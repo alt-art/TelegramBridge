@@ -1,7 +1,11 @@
 package org.altart.telegrambridge;
 
 public enum Permissions {
-    REPLY_COMMAND("commands.reply"), RECEIVE("receive"), SEND("send");
+    DEFAULT_TRANSLATION_CONFIG("commands.config.default-language"),
+    TRANSLATION_CONFIG("commands.config.language"),
+    REPLY_COMMAND("commands.reply"),
+    RECEIVE("receive"),
+    SEND("send");
 
     private final String permission;
 

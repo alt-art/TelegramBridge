@@ -137,13 +137,13 @@ public class Config {
             return chats;
         }
 
-        public static List<Map<String, Object>> chatsToMaps(List<Chat> chats) {
-            List<Map<String, Object>> chats_map = new ArrayList<>();
+        public static List<Map<String, String>> chatsToMaps(List<Chat> chats) {
+            List<Map<String, String>> chats_map = new ArrayList<>();
             for (Chat chat : chats) {
-                Map<String, Object> chat_map = new HashMap<>();
+                Map<String, String> chat_map = new HashMap<>();
                 chat_map.put("id", chat.id);
-                chat_map.put("thread", chat.thread);
-                chat_map.put("pinnedMessageId", chat.pinnedMessageId);
+                chat_map.put("thread", String.valueOf(chat.thread));
+                chat_map.put("pinnedMessageId", String.valueOf(chat.pinnedMessageId));
                 chats_map.add(chat_map);
             }
             return chats_map;

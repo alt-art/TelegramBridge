@@ -17,6 +17,9 @@ chats:
     # Thread ID (not meant to be edited from config file) (optional)
     thread: null
 
+# Pinned message that will be showed on telegram
+pinned: 'Hey welcome to the chat!\nThere are %count% players online%players%'
+
 # If messages should be sent to the chat
 sendToChat: true
 # If messages should be sent to the bot

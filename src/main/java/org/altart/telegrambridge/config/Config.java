@@ -14,17 +14,27 @@ public class Config {
     public String botToken = "YOUR_BOT_TOKEN";
     public List<Chat> chats = Collections.singletonList(new Chat("YOUR_CHAT_ID", null, null));
 
-    public boolean sendToChat = true;
-    public boolean sendToTelegram = true;
+    // default constants
+    final boolean SEND_TO_CHAT = true;
+    final boolean SEND_TO_TELEGRAM = true;
+    final boolean JOIN_AND_LEAVE_EVENT = true;
+    final boolean DEATH_EVENT = true;
+    final boolean ADVANCEMENT_EVENT = true;
+    final boolean SLEEP_EVENT = false;
+    final String DEFAULT_LANG = "en";
+    final String DEFAULT_PINNED = "Hey welcome to the chat!\nThere are %count% players online%players%";
 
-    public boolean joinAndLeaveEvent = true;
-    public boolean deathEvent = true;
-    public boolean advancementEvent = true;
-    public boolean sleepEvent = false;
+    public boolean sendToChat = SEND_TO_CHAT;
+    public boolean sendToTelegram = SEND_TO_TELEGRAM;
 
-    public String lang = "en";
+    public boolean joinAndLeaveEvent = JOIN_AND_LEAVE_EVENT;
+    public boolean deathEvent = DEATH_EVENT;
+    public boolean advancementEvent = ADVANCEMENT_EVENT;
+    public boolean sleepEvent = SLEEP_EVENT;
 
-    public String pinned = "Hey welcome to the chat!\nThere are %count% players online%players%";
+    public String lang = DEFAULT_LANG;
+
+    public String pinned = DEFAULT_PINNED;
 
     public Config() {
         load();
@@ -70,9 +80,32 @@ public class Config {
         File configFile = new File(TelegramBridge.plugin.getDataFolder().getAbsoluteFile(), "config.yml");
         try {
             FileConfiguration config = new YamlConfiguration();
+            if (sendToChat != SEND_TO_CHAT) {
+                config.set("sendToChat", sendToChat);
+            }
+            if (sendToTelegram != SEND_TO_TELEGRAM) {
+                config.set("sendToTelegram", sendToTelegram);
+            }
+            if (joinAndLeaveEvent != JOIN_AND_LEAVE_EVENT) {
+                config.set("joinAndLeaveEvent", joinAndLeaveEvent);
+            }
+            if (deathEvent != DEATH_EVENT) {
+                config.set("deathEvent", deathEvent);
+            }
+            if (advancementEvent != ADVANCEMENT_EVENT) {
+                config.set("advancementEvent", advancementEvent);
+            }
+            if (sleepEvent != SLEEP_EVENT) {
+                config.set("sleepEvent", sleepEvent);
+            }
+            if (!lang.equals(DEFAULT_LANG)) {
+                config.set("lang", lang);
+            }
+            if (!pinned.equals(DEFAULT_PINNED)) {
+                config.set("pinned", pinned);
+            }
             config.set("botToken", botToken);
             config.set("chats", Chat.chatsToMaps(chats));
-            config.set("lang", lang);
             config.save(configFile);
         } catch (Exception e) {
             TelegramBridge.log.severe("Error saving config: " + e.getMessage());

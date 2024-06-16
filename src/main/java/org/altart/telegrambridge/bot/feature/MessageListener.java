@@ -64,7 +64,7 @@ public class MessageListener extends TelegramFeature {
         Message message = update.getMessage();
         String text = message.getText();
         if (text != null && !text.startsWith("/") && TelegramBridge.config.sendToChat) {
-            String username = message.getFrom().getUserName();
+            String username = getUserName(message);
             TelegramBridge.log.info("Telegram message received from " + username + ": " + text);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {
@@ -110,6 +110,24 @@ public class MessageListener extends TelegramFeature {
                 }
             }
         }
+    }
+
+    private static @NotNull String getUserName(Message message) {
+        String username = message.getFrom().getUserName();
+        if (username == null) {
+            String firstName = message.getFrom().getFirstName();
+            String lastName = message.getFrom().getLastName();
+            username = firstName;
+            if (lastName != null) {
+                username += " " + message.getFrom().getLastName();
+            }
+        }
+
+        if (username.trim().isEmpty()) {
+            username = "Anonymous";
+        }
+
+        return username;
     }
 
     @SuppressWarnings("deprecation")

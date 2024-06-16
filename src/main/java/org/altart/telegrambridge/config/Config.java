@@ -157,13 +157,15 @@ public class Config {
             List<Chat> chats = new ArrayList<>();
             for (Map<?, ?> chat : chats_map) {
                 String id = (String) chat.get("id");
+                Object threadObj = chat.get("thread");
                 Integer thread = null;
-                if (chat.get("thread") != null) {
-                    thread = Integer.valueOf(String.valueOf(chat.get("thread")));
+                if (threadObj != null) {
+                    thread = Integer.valueOf(String.valueOf(threadObj));
                 }
+                Object pinnedMessageIdObj = chat.get("pinnedMessageId");
                 Integer pinnedMessageId = null;
-                if (chat.get("pinnedMessageId") != null) {
-                    pinnedMessageId = Integer.valueOf(String.valueOf(chat.get("pinnedMessageId")));
+                if (pinnedMessageIdObj != null) {
+                    pinnedMessageId = Integer.valueOf(String.valueOf(pinnedMessageIdObj));
                 }
                 chats.add(new Chat(id, thread, pinnedMessageId));
             }
@@ -175,8 +177,12 @@ public class Config {
             for (Chat chat : chats) {
                 Map<String, String> chat_map = new HashMap<>();
                 chat_map.put("id", chat.id);
-                chat_map.put("thread", String.valueOf(chat.thread));
-                chat_map.put("pinnedMessageId", String.valueOf(chat.pinnedMessageId));
+                if (chat.thread != null) {
+                    chat_map.put("thread", String.valueOf(chat.thread));
+                }
+                if (chat.pinnedMessageId != null) {
+                    chat_map.put("pinnedMessageId", String.valueOf(chat.pinnedMessageId));
+                }
                 chats_map.add(chat_map);
             }
             return chats_map;

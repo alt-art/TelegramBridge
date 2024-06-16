@@ -68,6 +68,9 @@ public class MessageListener extends TelegramFeature {
             if (username == null) {
                 username = String.format("%s %s", message.getFrom().getFirstName(), message.getFrom().getLastName());
             }
+            if (username.trim().isEmpty()) {
+                username = "Anonymous";
+            }
             TelegramBridge.log.info("Telegram message received from " + username + ": " + text);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission(Permissions.RECEIVE.getString())) {

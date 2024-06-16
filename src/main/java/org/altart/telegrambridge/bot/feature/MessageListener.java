@@ -66,7 +66,7 @@ public class MessageListener extends TelegramFeature {
         if (text != null && !text.startsWith("/") && TelegramBridge.config.sendToChat) {
             String username = message.getFrom().getUserName();
             if (username == null) {
-                username = message.getFrom().getFirstName();
+                username = String.format("%s %s", message.getFrom().getFirstName(), message.getFrom().getLastName());
             }
             TelegramBridge.log.info("Telegram message received from " + username + ": " + text);
             for (Player player : Bukkit.getOnlinePlayers()) {

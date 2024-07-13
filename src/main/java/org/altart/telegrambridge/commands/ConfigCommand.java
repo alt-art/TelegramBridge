@@ -17,7 +17,7 @@ public class ConfigCommand implements CommandExecutor {
         if (args[0].equals("default-lang")) {
             if (!sender.hasPermission(Permissions.DEFAULT_TRANSLATION_CONFIG.getString())) {
                 sender.sendMessage("You do not have permission to use this command.");
-                return true;
+                return false;
             }
             try {
                 TelegramBridge.translations.setDefaultLang(args[1]);
@@ -31,14 +31,14 @@ public class ConfigCommand implements CommandExecutor {
         if (args[0].equals("lang")) {
             if (!sender.hasPermission(Permissions.TRANSLATION_CONFIG.getString())) {
                 sender.sendMessage("You do not have permission to use this command.");
-                return true;
+                return false;
             }
             try {
                 if (sender instanceof Player) {
                     TelegramBridge.database.setLang(((Player) sender).getUniqueId(), args[1]);
                 } else {
                     sender.sendMessage("This command can only be used by players.");
-                    return true;
+                    return false;
                 }
             } catch (Exception e) {
                 sender.sendMessage(e.getMessage());

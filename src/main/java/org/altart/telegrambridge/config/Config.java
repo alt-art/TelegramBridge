@@ -15,14 +15,14 @@ public class Config {
     public List<Chat> chats = Collections.singletonList(new Chat("YOUR_CHAT_ID", null, null));
 
     // default constants
-    final boolean SEND_TO_CHAT = true;
-    final boolean SEND_TO_TELEGRAM = true;
-    final boolean JOIN_AND_LEAVE_EVENT = true;
-    final boolean DEATH_EVENT = true;
-    final boolean ADVANCEMENT_EVENT = true;
-    final boolean SLEEP_EVENT = false;
-    final String DEFAULT_LANG = "en";
-    final String DEFAULT_PINNED = "Hey welcome to the chat!\nThere are %count% players online%players%";
+    private final boolean SEND_TO_CHAT = true;
+    private final boolean SEND_TO_TELEGRAM = true;
+    private final boolean JOIN_AND_LEAVE_EVENT = true;
+    private final boolean DEATH_EVENT = true;
+    private final boolean ADVANCEMENT_EVENT = true;
+    private final boolean SLEEP_EVENT = false;
+    private final String DEFAULT_LANG = "en";
+    private final String DEFAULT_PINNED = "Hey welcome to the chat!\nThere are %count% players online%players%";
 
     public boolean sendToChat = SEND_TO_CHAT;
     public boolean sendToTelegram = SEND_TO_TELEGRAM;

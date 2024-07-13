@@ -4,6 +4,7 @@ import org.altart.telegrambridge.StandardMockTest;
 import org.altart.telegrambridge.TelegramBridge;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -20,6 +21,12 @@ class ConfigTest extends StandardMockTest {
 
     @Mock
     Plugin mockPlugin;
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @AfterEach
+    void afterEach() {
+        new File("src/test/resources/empty/config.yml").delete();
+    }
 
     @Test
     @DisplayName("Load config")
@@ -52,8 +59,7 @@ class ConfigTest extends StandardMockTest {
         assertEquals("YOUR_CHAT_ID", config.chats.get(0).id);
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
-
-        assertTrue(new File("src/test/resources/empty/config.yml").delete());
+        assertTrue(new File("src/test/resources/empty/config.yml").exists());
     }
 
     @Test
@@ -77,6 +83,7 @@ class ConfigTest extends StandardMockTest {
         config.deathEvent = !config.deathEvent;
         config.sleepEvent = !config.sleepEvent;
         config.advancementEvent = !config.advancementEvent;
+        config.serverStartStop = !config.serverStartStop;
         config.lang = "LANG";
         config.pinned = "PINNED";
         config.save();
@@ -103,9 +110,9 @@ class ConfigTest extends StandardMockTest {
                 fail();
             }
         }
+        assertEquals(20, fields.length);
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
-        assertTrue(new File("src/test/resources/empty/config.yml").delete());
     }
 
     @Test
@@ -134,7 +141,7 @@ class ConfigTest extends StandardMockTest {
 
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
-        assertTrue(new File("src/test/resources/empty/config.yml").delete());
+        assertTrue(new File("src/test/resources/empty/config.yml").exists());
     }
 
     @Test
@@ -157,7 +164,7 @@ class ConfigTest extends StandardMockTest {
 
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
-        assertTrue(new File("src/test/resources/empty/config.yml").delete());
+        assertTrue(new File("src/test/resources/empty/config.yml").exists());
     }
 
     @Test
@@ -186,6 +193,6 @@ class ConfigTest extends StandardMockTest {
 
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
-        assertTrue(new File("src/test/resources/empty/config.yml").delete());
+        assertTrue(new File("src/test/resources/empty/config.yml").exists());
     }
 }

@@ -24,8 +24,8 @@ class TranslationsTest extends StandardMockTest {
     @Test
     @DisplayName("Get translation")
     void getTranslation() {
-        File resourseFolder = new File("src/test/resources");
-        when(mockPlugin.getDataFolder()).thenReturn(resourseFolder);
+        File resourceFolder = new File("src/test/resources");
+        when(mockPlugin.getDataFolder()).thenReturn(resourceFolder);
 
         TelegramBridge.plugin = mockPlugin;
 
@@ -40,7 +40,7 @@ class TranslationsTest extends StandardMockTest {
         assertNotNull(translation);
         verify(mockPlugin, times(1)).getDataFolder();
         Field[] fields = translation.getClass().getDeclaredFields();
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(resourseFolder, "lang/en.yml"));
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(resourceFolder, "lang/en.yml"));
         for (Field field : fields) {
             field.setAccessible(true);
             try {
@@ -58,8 +58,8 @@ class TranslationsTest extends StandardMockTest {
     @Test
     @DisplayName("Set default language")
     void setDefaultLang() {
-        File resourseFolder = new File("src/test/resources");
-        when(mockPlugin.getDataFolder()).thenReturn(resourseFolder);
+        File resourceFolder = new File("src/test/resources");
+        when(mockPlugin.getDataFolder()).thenReturn(resourceFolder);
 
         TelegramBridge.plugin = mockPlugin;
 
@@ -71,7 +71,7 @@ class TranslationsTest extends StandardMockTest {
         }
 
         Field[] fields = translations.get().getClass().getDeclaredFields();
-        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(resourseFolder, "lang/pt.yml"));
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(resourceFolder, "lang/pt.yml"));
         for (Field field : fields) {
             field.setAccessible(true);
             try {
@@ -89,8 +89,8 @@ class TranslationsTest extends StandardMockTest {
     @Test
     @DisplayName("Set default language with invalid language and non-existent file")
     void translationExceptions() {
-        File resourseFolder = new File("src/test/resources");
-        when(mockPlugin.getDataFolder()).thenReturn(resourseFolder);
+        File resourceFolder = new File("src/test/resources");
+        when(mockPlugin.getDataFolder()).thenReturn(resourceFolder);
 
         TelegramBridge.plugin = mockPlugin;
 
@@ -106,8 +106,8 @@ class TranslationsTest extends StandardMockTest {
     @Test
     @DisplayName("Empty translations directory")
     void emptyTranslationsDirectory() {
-        File resourseFolder = new File("src/test/resources/empty");
-        when(mockPlugin.getDataFolder()).thenReturn(resourseFolder);
+        File resourceFolder = new File("src/test/resources/empty");
+        when(mockPlugin.getDataFolder()).thenReturn(resourceFolder);
 
         TelegramBridge.plugin = mockPlugin;
 
@@ -119,9 +119,9 @@ class TranslationsTest extends StandardMockTest {
             verify(mockPlugin, times(1)).saveResource("lang/" + lang + ".yml", false);
         }
 
-        File langDir = new File(resourseFolder, "lang");
+        File langDir = new File(resourceFolder, "lang");
         assertTrue(langDir.delete());
-        assertTrue(resourseFolder.delete());
+        assertTrue(resourceFolder.delete());
     }
 
     @Test

@@ -122,11 +122,6 @@ public class MessageListener extends TelegramFeature {
                 username += " " + message.getFrom().getLastName();
             }
         }
-
-        if (username.trim().isEmpty()) {
-            username = "Anonymous";
-        }
-
         return username;
     }
 

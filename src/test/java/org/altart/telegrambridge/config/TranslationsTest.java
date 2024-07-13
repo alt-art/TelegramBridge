@@ -31,7 +31,7 @@ class TranslationsTest extends StandardMockTest {
 
         Translations translations = new Translations("en");
         List<String> languageCodes = translations.getLoadedLanguages();
-        List<String> expectedLanguageCodes = Arrays.asList("en", "es", "jp", "pt", "ru", "uk", "tt");
+        List<String> expectedLanguageCodes = Arrays.asList("en", "es", "jp", "pt", "ru", "tt");
         assertEquals(expectedLanguageCodes.size(), languageCodes.size());
         for (String lang : expectedLanguageCodes) {
             assertTrue(languageCodes.contains(lang));

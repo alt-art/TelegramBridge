@@ -33,4 +33,6 @@ deathEvent: true
 advancementEvent: true
 # Log player sleep in telegram chat
 sleepEvent: false
+# Log when server starts and stops in telegram chat
+serverStartStop: false
 ```

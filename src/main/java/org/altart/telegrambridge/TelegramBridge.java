@@ -49,41 +49,51 @@ public final class TelegramBridge extends JavaPlugin {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             botSession = telegramBotsApi.registerBot(telegramBot);
             log.info("Telegram bot registered");
+            if (config.sendToTelegram && config.serverStartStop) {
+                telegramBot.broadcastMessage(translations.get().serverStart);
+            }
+
+            Bukkit.getPluginManager().registerEvents(new ChatEvent(), plugin);
+            Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
+            try {
+                Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());
+                PluginCommand replyCommand = Objects.requireNonNull(getCommand("tbreply"));
+                replyCommand.setExecutor(new ReplyCommand());
+                replyCommand.setTabCompleter(new UserTabCompletion(2));
+                PluginCommand mentionCommand = Objects.requireNonNull(getCommand("tbmention"));
+                mentionCommand.setExecutor(new MentionCommand());
+                mentionCommand.setTabCompleter(new UserTabCompletion(1));
+                PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
+                configCommand.setExecutor(new ConfigCommand());
+                configCommand.setTabCompleter(new ConfigTabCompletion());
+            } catch (NullPointerException e) {
+                log.severe("Error registering command: " + e.getMessage());
+                Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
+            }
         } catch (Exception e) {
             log.severe("Error registering bot: " + e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(line -> log.severe(line.toString()));
-        }
-
-        Bukkit.getPluginManager().registerEvents(new ChatEvent(), plugin);
-        Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
-        try {
-            Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());
-            PluginCommand replyCommand = Objects.requireNonNull(getCommand("tbreply"));
-            replyCommand.setExecutor(new ReplyCommand());
-            replyCommand.setTabCompleter(new UserTabCompletion(2));
-            PluginCommand mentionCommand = Objects.requireNonNull(getCommand("tbmention"));
-            mentionCommand.setExecutor(new MentionCommand());
-            mentionCommand.setTabCompleter(new UserTabCompletion(1));
-            PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
-            configCommand.setExecutor(new ConfigCommand());
-            configCommand.setTabCompleter(new ConfigTabCompletion());
-        } catch (NullPointerException e) {
-            log.severe("Error registering command: " + e.getMessage());
-            Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));
         }
     }
 
     @Override
     public void onDisable() {
-        if (config.sendToTelegram && config.joinAndLeaveEvent) {
-            StringBuilder message = new StringBuilder();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                message.append(Format.string(translations.get().leave, "playername", player.getDisplayName())).append("\n");
-            }
-            telegramBot.broadcastMessage(message.toString());
-        }
         database.close();
         if (botSession != null) {
+            if (config.sendToTelegram) {
+                if (config.joinAndLeaveEvent) {
+                    StringBuilder message = new StringBuilder();
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        message.append(Format.string(translations.get().leave, "playername", player.getDisplayName())).append("\n");
+                    }
+                    if (message.length() > 0) {
+                        telegramBot.broadcastMessage(message.toString());
+                    }
+                }
+                if (config.serverStartStop) {
+                    telegramBot.broadcastMessage(translations.get().serverStop);
+                }
+            }
             botSession.stop();
         }
     }

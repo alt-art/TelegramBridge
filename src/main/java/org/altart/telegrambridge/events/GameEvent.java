@@ -60,19 +60,17 @@ public class GameEvent implements Listener {
     @EventHandler
     public void onAdvancement(PlayerAdvancementDoneEvent event) {
         if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.advancementEvent) {
-            String playerNick = event.getPlayer().getDisplayName();
             String advancementKey = event.getAdvancement().getKey().getKey().replace("/", ".");
             if (advancementKey.startsWith("recipes.")) {
                 return;
             }
+
+            String playerNick = event.getPlayer().getDisplayName();
+
             String advancementText = TranslationRegistry.INSTANCE.translate("advancements." + advancementKey + ".title");
-            if (advancementText == null) {
-                advancementText = advancementKey;
-            }
             String advancementDescription = TranslationRegistry.INSTANCE.translate("advancements." + advancementKey + ".description");
-            if (advancementDescription != null) {
-                advancementText += ": " + advancementDescription;
-            }
+            advancementText += ": " + advancementDescription;
+
             HashMap<String, String> values = new HashMap<>();
             values.put("playername", playerNick);
             values.put("advancement", advancementText);

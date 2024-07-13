@@ -208,9 +208,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public class CommandSender {
-        public Plugin plugin;
-        public Message message;
-        public TelegramBot bot;
+        public final Plugin plugin;
+        public final Message message;
+        public final TelegramBot bot;
 
         private CommandSender(Message message, Plugin plugin, TelegramBot bot) {
             this.message = message;

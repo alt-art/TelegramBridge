@@ -15,6 +15,10 @@ death: '%playername% погиб! %deathmessage%'
 advancement: '%playername% получил достижение «%advancement%»!'
 # Когда ложится спать
 sleep: '%playername% лёг спать!'
+# Когда сервер запускается
+serverStart: 'Сервер запущен!'
+# Когда сервер останавливается
+serverStop: 'Сервер остановлен!'
 
 # Когда в игре кто-то отправляет сообщение
 chatMessage: '[%playername%]: %message%'

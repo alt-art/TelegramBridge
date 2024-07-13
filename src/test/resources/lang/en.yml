@@ -15,6 +15,10 @@ death: 'Player %playername% died! %deathmessage%'
 advancement: 'Player %playername% made an advancement! %advancement%'
 # When a player sleeps
 sleep: 'Player %playername% went to bed!'
+# When server starts
+serverStart: 'Server started!'
+# When server stops
+serverStop: 'Server stopped!'
 
 # When a minecraft player sends a message
 chatMessage: '[%playername%]: %message%'

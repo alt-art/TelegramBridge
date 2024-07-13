@@ -88,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private boolean isNotAdmin(String chatId, Long userId) {
+    public boolean isNotAdmin(String chatId, Long userId) {
         GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
         getChatAdministrators.setChatId(chatId);
         try {

@@ -15,6 +15,10 @@ death: 'JM'
 advancement: 'JC'
 # Quando um jogador dorme
 sleep: 'JD'
+# Quando o servidor inicia
+serverStart: 'JSS'
+# Quando o servidor para
+serverStop: 'JSP'
 
 # Quando um jogador envia uma mensagem
 chatMessage: 'CM'

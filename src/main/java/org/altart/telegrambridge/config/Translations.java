@@ -69,6 +69,8 @@ public class Translations {
         public String death;
         public String advancement;
         public String sleep;
+        public String serverStart;
+        public String serverStop;
 
         public String chatMessage;
         public String telegramMessage;

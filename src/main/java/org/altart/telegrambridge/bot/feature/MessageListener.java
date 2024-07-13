@@ -75,7 +75,7 @@ public class MessageListener extends TelegramFeature {
 
                     Message reply = message.getReplyToMessage();
                     if (reply != null && reply.hasText()) {
-                        String replyUsername = reply.getFrom().getUserName();
+                        String replyUsername = getUserName(message);
                         String replyMessage = reply.getText();
                         finalComponent.addExtra(replyComponent(replyUsername, replyMessage, lang));
                     }

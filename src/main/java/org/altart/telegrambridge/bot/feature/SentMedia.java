@@ -22,17 +22,17 @@ public class SentMedia extends TelegramFeature {
 
     @Override
     public void onUpdateReceived(@NotNull Update update) {
-        Message message = update.getMessage();
-        if (isMedia(message)) {
-            String username = message.getFrom().getUserName();
-            String caption = message.getCaption();
-            caption = caption == null ? "" : "\n" + caption;
-            if (TelegramBridge.config.sendToChat) {
+        if (TelegramBridge.config.sendToChat) {
+            Message message = update.getMessage();
+            if (isMedia(message)) {
+                String username = message.getFrom().getUserName();
+                String caption = message.getCaption();
+                caption = caption == null ? "" : "\n" + caption;
+                HashMap<String, String> values = new HashMap<>();
+                values.put("caption", caption);
+                values.put("user", username);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.hasPermission(Permissions.RECEIVE.getString())) {
-                        HashMap<String, String> values = new HashMap<>();
-                        values.put("user", username);
-                        values.put("caption", caption);
                         String lang = TelegramBridge.database.getLang(player.getUniqueId());
                         values.put("type", determineMediaType(message, lang));
                         String text = Format.string(TelegramBridge.translations.get(lang).telegramMedia, values);

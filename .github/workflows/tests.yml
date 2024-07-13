@@ -20,7 +20,7 @@ jobs:
               java-version: '17'
               distribution: 'corretto'
         - name: Run tests
-          run: ./gradlew test
+          run: ./gradlew
         - name: Report test results
           uses: mikepenz/action-junit-report@v4
           if: success() || failure()

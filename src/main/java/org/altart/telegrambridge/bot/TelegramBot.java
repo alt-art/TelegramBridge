@@ -32,9 +32,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final Plugin plugin;
     private final Map<String, TelegramCommandExecutor> commands = new HashMap<>();
 
-    private final List<TelegramFeature> features = new ArrayList<>();
+    public List<TelegramFeature> features = new ArrayList<>();
 
-    public final PinMessage pinMessageFeature = new PinMessage(this);
+    public PinMessage pinMessageFeature = new PinMessage(this);
     public final UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
     public final MessageListener messageListenerFeature = new MessageListener(this);
     public final SentMedia sentMediaFeature = new SentMedia(this);

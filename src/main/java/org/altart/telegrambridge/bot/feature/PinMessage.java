@@ -13,7 +13,6 @@ public class PinMessage extends TelegramFeature {
 
     public PinMessage(TelegramBot telegramBot) {
         super(telegramBot);
-        updatePinnedMessage();
     }
 
     static public String buildPinnedMessage() {

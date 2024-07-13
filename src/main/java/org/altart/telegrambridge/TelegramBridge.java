@@ -7,8 +7,10 @@ import org.altart.telegrambridge.config.Translations;
 import org.altart.telegrambridge.database.SQLite;
 import org.altart.telegrambridge.events.ChatEvent;
 import org.altart.telegrambridge.events.GameEvent;
+import org.altart.telegrambridge.utils.Format;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -73,6 +75,13 @@ public final class TelegramBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (config.sendToTelegram && config.joinAndLeaveEvent) {
+            StringBuilder message = new StringBuilder();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                message.append(Format.string(translations.get().leave, "playername", player.getDisplayName())).append("\n");
+            }
+            telegramBot.broadcastMessage(message.toString());
+        }
         database.close();
         if (botSession != null) {
             botSession.stop();

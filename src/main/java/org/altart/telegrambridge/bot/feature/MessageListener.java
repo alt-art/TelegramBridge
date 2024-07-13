@@ -150,10 +150,10 @@ public class MessageListener extends TelegramFeature {
     }
 
     private static class MessageInfo {
-        public String chatId;
-        public Integer messageId;
-        public String message;
-        public String username;
+        public final String chatId;
+        public final Integer messageId;
+        public final String message;
+        public final String username;
 
         public MessageInfo(String chatId, Integer messageId, String message, String username) {
             this.chatId = chatId;

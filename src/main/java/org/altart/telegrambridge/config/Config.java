@@ -62,7 +62,7 @@ public class Config {
                 }
             }
         } else {
-            TelegramBridge.log.warning("Config file not found making a new one at %s" + configFile.getAbsolutePath());
+            TelegramBridge.log.warning("Config file not found making a new one at " + configFile.getAbsolutePath());
             try {
                 FileConfiguration config = new YamlConfiguration();
                 config.set("botToken", botToken);

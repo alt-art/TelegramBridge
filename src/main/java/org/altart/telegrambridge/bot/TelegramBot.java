@@ -198,7 +198,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void deleteMessage(String chatId, Integer messageId) {
+    public void deleteMessage(@NotNull String chatId, @NotNull Integer messageId) {
         try {
             execute(new DeleteMessage(chatId, messageId));
         } catch (TelegramApiException e) {

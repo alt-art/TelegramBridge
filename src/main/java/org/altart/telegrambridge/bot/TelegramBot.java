@@ -172,7 +172,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void unpinMessage(String chatId, Integer messageId) {
+    public void unpinMessage(@NotNull String chatId, Integer messageId) {
         try {
             execute(new UnpinChatMessage(chatId, messageId));
         } catch (TelegramApiException e) {

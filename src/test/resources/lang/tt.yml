@@ -1,0 +1,36 @@
+# Author: @alt-art
+
+# Nome dos meses para o comando /time
+months: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12' ]
+# Tipos de mídia para o tipo de mídia que é enviada para o chat
+mediaTypes: [ 'MI', 'MV', 'MD', 'MM', 'MA', 'MS', 'MC', 'ML', 'ME', 'M?' ]
+
+# Quando um jogador entra no servidor
+join: 'JE'
+# Quando um jogador sai do servidor
+leave: 'JS'
+# Quando um jogador morre
+death: 'JM'
+# Quando um jogador faz uma conquista
+advancement: 'JC'
+# Quando um jogador dorme
+sleep: 'JD'
+
+# Quando um jogador envia uma mensagem
+chatMessage: 'CM'
+# Quando um usuário do Telegram envia uma mensagem
+telegramMessage: 'TM'
+# Quando um usuário do Telegram envia uma mídia
+telegramMedia: 'TMM'
+# Quando um jogador ou usuário do Telegram envia uma resposta
+telegramReply: 'TR'
+
+# Comando /online
+online: 'JO'
+# Comando /time
+time: 'JT'
+
+# Botão de resposta no chat
+replyButton: 'RB'
+# Mensagem ao colocar o mouse sobre o botão de resposta
+replyHint: 'RA'

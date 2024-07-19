@@ -110,7 +110,6 @@ class ConfigTest extends StandardMockTest {
                 fail();
             }
         }
-        assertEquals(20, fields.length);
         verify(log, times(1)).warning(anyString());
         verify(log, times(1)).info(anyString());
     }

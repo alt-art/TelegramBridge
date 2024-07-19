@@ -35,8 +35,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     public List<TelegramFeature> features = new ArrayList<>();
 
     public PinMessage pinMessageFeature = new PinMessage(this);
-    public final UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
-    public final MessageListener messageListenerFeature = new MessageListener(this);
+    public UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
+    public MessageListener messageListenerFeature = new MessageListener(this);
     public final SentMedia sentMediaFeature = new SentMedia(this);
 
     public TelegramBot(Plugin plugin) {

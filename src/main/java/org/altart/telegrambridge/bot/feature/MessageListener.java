@@ -75,7 +75,7 @@ public class MessageListener extends TelegramFeature {
 
                     Message reply = message.getReplyToMessage();
                     if (reply != null && reply.hasText()) {
-                        String replyUsername = reply.getFrom().getUserName();
+                        String replyUsername = getUserName(message);
                         String replyMessage = reply.getText();
                         finalComponent.addExtra(replyComponent(replyUsername, replyMessage, lang));
                     }
@@ -122,11 +122,6 @@ public class MessageListener extends TelegramFeature {
                 username += " " + message.getFrom().getLastName();
             }
         }
-
-        if (username.trim().isEmpty()) {
-            username = "Anonymous";
-        }
-
         return username;
     }
 
@@ -155,10 +150,10 @@ public class MessageListener extends TelegramFeature {
     }
 
     private static class MessageInfo {
-        public String chatId;
-        public Integer messageId;
-        public String message;
-        public String username;
+        public final String chatId;
+        public final Integer messageId;
+        public final String message;
+        public final String username;
 
         public MessageInfo(String chatId, Integer messageId, String message, String username) {
             this.chatId = chatId;

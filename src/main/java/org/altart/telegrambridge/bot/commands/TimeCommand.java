@@ -31,7 +31,7 @@ public class TimeCommand extends TelegramCommandExecutor {
         sender.sendMessage(response);
     }
 
-    public HashMap<String, String> makeTimeMap(String time, String emoji, int day, int month, int year) {
+    private HashMap<String, String> makeTimeMap(String time, String emoji, int day, int month, int year) {
         HashMap<String, String> values = new HashMap<>();
         values.put("time", time);
         values.put("emoji", emoji);

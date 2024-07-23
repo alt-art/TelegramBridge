@@ -15,14 +15,15 @@ public class Config {
     public List<Chat> chats = Collections.singletonList(new Chat("YOUR_CHAT_ID", null, null));
 
     // default constants
-    final boolean SEND_TO_CHAT = true;
-    final boolean SEND_TO_TELEGRAM = true;
-    final boolean JOIN_AND_LEAVE_EVENT = true;
-    final boolean DEATH_EVENT = true;
-    final boolean ADVANCEMENT_EVENT = true;
-    final boolean SLEEP_EVENT = false;
-    final String DEFAULT_LANG = "en";
-    final String DEFAULT_PINNED = "Hey welcome to the chat!\nThere are %count% players online%players%";
+    private final boolean SEND_TO_CHAT = true;
+    private final boolean SEND_TO_TELEGRAM = true;
+    private final boolean JOIN_AND_LEAVE_EVENT = true;
+    private final boolean DEATH_EVENT = true;
+    private final boolean ADVANCEMENT_EVENT = true;
+    private final boolean SLEEP_EVENT = false;
+    private final boolean SERVER_START_STOP = false;
+    private final String DEFAULT_LANG = "en";
+    private final String DEFAULT_PINNED = "Hey welcome to the chat!\nThere are %count% players online%players%";
 
     public boolean sendToChat = SEND_TO_CHAT;
     public boolean sendToTelegram = SEND_TO_TELEGRAM;
@@ -31,6 +32,7 @@ public class Config {
     public boolean deathEvent = DEATH_EVENT;
     public boolean advancementEvent = ADVANCEMENT_EVENT;
     public boolean sleepEvent = SLEEP_EVENT;
+    public boolean serverStartStop = SERVER_START_STOP;
 
     public String lang = DEFAULT_LANG;
 
@@ -50,7 +52,7 @@ public class Config {
                     if (config.contains(field.getName())) {
                         if (field.getType().equals(String.class)) {
                             field.set(this, config.get(field.getName()));
-                        } else if (field.getType().equals(Boolean.class)) {
+                        } else if (field.getType().equals(boolean.class)) {
                             field.set(this, config.getBoolean(field.getName()));
                         } else if (field.getType().equals(List.class)) {
                             field.set(this, Chat.chatsFrom(config.getMapList(field.getName())));
@@ -62,7 +64,7 @@ public class Config {
                 }
             }
         } else {
-            TelegramBridge.log.warning("Config file not found making a new one at %s" + configFile.getAbsolutePath());
+            TelegramBridge.log.warning("Config file not found making a new one at " + configFile.getAbsolutePath());
             try {
                 FileConfiguration config = new YamlConfiguration();
                 config.set("botToken", botToken);
@@ -97,6 +99,9 @@ public class Config {
             }
             if (sleepEvent != SLEEP_EVENT) {
                 config.set("sleepEvent", sleepEvent);
+            }
+            if (serverStartStop != SERVER_START_STOP) {
+                config.set("serverStartStop", serverStartStop);
             }
             if (!lang.equals(DEFAULT_LANG)) {
                 config.set("lang", lang);

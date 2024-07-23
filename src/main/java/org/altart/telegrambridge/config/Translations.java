@@ -69,6 +69,8 @@ public class Translations {
         public String death;
         public String advancement;
         public String sleep;
+        public String serverStart;
+        public String serverStop;
 
         public String chatMessage;
         public String telegramMessage;
@@ -81,7 +83,7 @@ public class Translations {
         public String replyButton;
         public String replyHint;
 
-        private Translation(@Nullable File translationsFile) {
+        public Translation(@Nullable File translationsFile) {
             if (translationsFile != null && translationsFile.exists()) {
                 FileConfiguration translations = YamlConfiguration.loadConfiguration(translationsFile);
                 Field[] fields = this.getClass().getDeclaredFields();

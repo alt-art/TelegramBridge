@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class UserTabCompletion implements TabCompleter {
-    int argLength;
+    final int argLength;
 
     public UserTabCompletion(int argLength) {
         this.argLength = argLength;

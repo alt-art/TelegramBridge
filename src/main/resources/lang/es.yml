@@ -15,6 +15,10 @@ death: '%playername% murió! %deathmessage%'
 advancement: '%playername% hizo un logro! %advancement%'
 # Cuando un jugador duerme
 sleep: '%playername% se fue a dormir!'
+# Cuando el servidor inicia
+serverStart: '¡Servidor iniciado!'
+# Cuando el servidor se detiene
+serverStop: '¡Servidor detenido!'
 
 # Cuando un jugador de Minecraft envía un mensaje
 chatMessage: '[%playername%]: %message%'

@@ -32,11 +32,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final Plugin plugin;
     private final Map<String, TelegramCommandExecutor> commands = new HashMap<>();
 
-    private final List<TelegramFeature> features = new ArrayList<>();
+    public List<TelegramFeature> features = new ArrayList<>();
 
-    public final PinMessage pinMessageFeature = new PinMessage(this);
-    public final UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
-    public final MessageListener messageListenerFeature = new MessageListener(this);
+    public PinMessage pinMessageFeature = new PinMessage(this);
+    public UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
+    public MessageListener messageListenerFeature = new MessageListener(this);
     public final SentMedia sentMediaFeature = new SentMedia(this);
 
     public TelegramBot(Plugin plugin) {
@@ -88,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private boolean isNotAdmin(String chatId, Long userId) {
+    public boolean isNotAdmin(String chatId, Long userId) {
         GetChatAdministrators getChatAdministrators = new GetChatAdministrators();
         getChatAdministrators.setChatId(chatId);
         try {
@@ -172,7 +172,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void unpinMessage(String chatId, Integer messageId) {
+    public void unpinMessage(@NotNull String chatId, Integer messageId) {
         try {
             execute(new UnpinChatMessage(chatId, messageId));
         } catch (TelegramApiException e) {
@@ -198,7 +198,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void deleteMessage(String chatId, Integer messageId) {
+    public void deleteMessage(@NotNull String chatId, @NotNull Integer messageId) {
         try {
             execute(new DeleteMessage(chatId, messageId));
         } catch (TelegramApiException e) {
@@ -208,9 +208,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public class CommandSender {
-        public Plugin plugin;
-        public Message message;
-        public TelegramBot bot;
+        public final Plugin plugin;
+        public final Message message;
+        public final TelegramBot bot;
 
         private CommandSender(Message message, Plugin plugin, TelegramBot bot) {
             this.message = message;

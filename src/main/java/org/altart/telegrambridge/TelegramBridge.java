@@ -66,6 +66,7 @@ public final class TelegramBridge extends JavaPlugin {
                 PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
                 configCommand.setExecutor(new ConfigCommand());
                 configCommand.setTabCompleter(new ConfigTabCompletion());
+                Objects.requireNonNull(getCommand("tblink")).setExecutor(new LinkCommand());
             } catch (NullPointerException e) {
                 log.severe("Error registering command: " + e.getMessage());
                 Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

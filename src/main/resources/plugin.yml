@@ -25,6 +25,10 @@ commands:
     usage: /tbmention <username> <message>
     permission: telegrambridge.commands.mention
     aliases: [tbm]
+  tblink:
+    description: Link your telegram account to your minecraft account
+    usage: /tblink
+    permission: telegrambridge.commands.link
 
 permissions:
     telegrambridge.commands.reload:
@@ -44,6 +48,9 @@ permissions:
         default: true
     telegrambridge.commands.mention:
         description: Allows the user to mention a user in a telegram chat
+        default: true
+    telegrambridge.commands.link:
+        description: Allows the user to link their telegram account to their minecraft account
         default: true
     telegrambridge.send:
         description: Allows the user to send messages to telegram chat

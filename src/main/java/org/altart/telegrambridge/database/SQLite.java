@@ -24,6 +24,7 @@ public class SQLite {
     private void init() {
         try {
             statement.execute("CREATE TABLE IF NOT EXISTS players (uuid TEXT PRIMARY KEY, lang TEXT)");
+            statement.execute("CREATE TABLE IF NOT EXISTS linked_accounts (nickname TEXT PRIMARY KEY NOT NULL UNIQUE, telegram_id INTEGER NOT NULL)");
         } catch (SQLException e) {
             TelegramBridge.log.severe(e.getMessage());
             Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
@@ -55,6 +56,41 @@ public class SQLite {
         } catch (SQLException e) {
             TelegramBridge.log.severe(e.getMessage());
             Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
+        }
+    }
+
+    public void linkAccount(String nickname, Long telegramId) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO linked_accounts (nickname, telegram_id) VALUES (?, ?)");
+            preparedStatement.setString(1, nickname);
+            preparedStatement.setLong(2, telegramId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            TelegramBridge.log.severe(e.getMessage());
+            Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
+        }
+    }
+
+    public void removeAccount(String nickname) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM linked_accounts WHERE nickname = ?");
+            preparedStatement.setString(1, nickname);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            TelegramBridge.log.severe(e.getMessage());
+            Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
+        }
+    }
+
+    public long getTelegramId(String nickname) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT telegram_id FROM linked_accounts WHERE nickname = ?");
+            preparedStatement.setString(1, nickname);
+            return preparedStatement.executeQuery().getLong("telegram_id");
+        } catch (SQLException e) {
+            TelegramBridge.log.severe(e.getMessage());
+            Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
+            return -1;
         }
     }
 

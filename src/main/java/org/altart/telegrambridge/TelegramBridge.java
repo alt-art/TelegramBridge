@@ -7,6 +7,7 @@ import org.altart.telegrambridge.config.Translations;
 import org.altart.telegrambridge.database.SQLite;
 import org.altart.telegrambridge.events.ChatEvent;
 import org.altart.telegrambridge.events.GameEvent;
+import org.altart.telegrambridge.events.RestrictionEvent;
 import org.altart.telegrambridge.utils.Format;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -26,6 +27,7 @@ public final class TelegramBridge extends JavaPlugin {
     public static Config config;
     public static Translations translations;
     public static SQLite database;
+    public static AuthManager authManager;
 
     public static TelegramBot telegramBot;
     private BotSession botSession;
@@ -37,6 +39,7 @@ public final class TelegramBridge extends JavaPlugin {
         config = new Config();
         translations = new Translations(config.lang);
         database = new SQLite();
+        authManager = new AuthManager();
 
         if (Objects.equals(config.botToken, "YOUR_BOT_TOKEN") || Objects.equals(config.chats.get(0).id, "YOUR_CHAT_ID")) {
             log.severe("Please set your bot token and chat id in the config file");
@@ -55,6 +58,8 @@ public final class TelegramBridge extends JavaPlugin {
 
             Bukkit.getPluginManager().registerEvents(new ChatEvent(), plugin);
             Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
+            Bukkit.getPluginManager().registerEvents(new RestrictionEvent(authManager), plugin);
+
             try {
                 Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());
                 PluginCommand replyCommand = Objects.requireNonNull(getCommand("tbreply"));

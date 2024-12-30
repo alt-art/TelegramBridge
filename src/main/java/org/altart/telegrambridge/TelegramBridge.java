@@ -1,5 +1,6 @@
 package org.altart.telegrambridge;
 
+import org.altart.telegrambridge.auth.AuthManager;
 import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.commands.*;
 import org.altart.telegrambridge.config.Config;
@@ -14,6 +15,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -27,7 +30,6 @@ public final class TelegramBridge extends JavaPlugin {
     public static Config config;
     public static Translations translations;
     public static SQLite database;
-    public static AuthManager authManager;
 
     public static TelegramBot telegramBot;
     private BotSession botSession;
@@ -39,13 +41,17 @@ public final class TelegramBridge extends JavaPlugin {
         config = new Config();
         translations = new Translations(config.lang);
         database = new SQLite();
-        authManager = new AuthManager();
 
         if (Objects.equals(config.botToken, "YOUR_BOT_TOKEN") || Objects.equals(config.chats.get(0).id, "YOUR_CHAT_ID")) {
             log.severe("Please set your bot token and chat id in the config file");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            AuthManager.checkExpired();
+            AuthManager.loginTitle();
+        }, 0L, 20L);
 
         try {
             telegramBot = new TelegramBot(plugin);
@@ -58,7 +64,7 @@ public final class TelegramBridge extends JavaPlugin {
 
             Bukkit.getPluginManager().registerEvents(new ChatEvent(), plugin);
             Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
-            Bukkit.getPluginManager().registerEvents(new RestrictionEvent(authManager), plugin);
+            Bukkit.getPluginManager().registerEvents(new RestrictionEvent(), plugin);
 
             try {
                 Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());

@@ -82,15 +82,16 @@ public class SQLite {
         }
     }
 
-    public long getTelegramId(String nickname) {
+    @Nullable
+    public Long getTelegramId(String nickname) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT telegram_id FROM linked_accounts WHERE nickname = ?");
             preparedStatement.setString(1, nickname);
-            return preparedStatement.executeQuery().getLong("telegram_id");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next() ? resultSet.getLong("telegram_id") : null;
         } catch (SQLException e) {
-            TelegramBridge.log.severe(e.getMessage());
-            Arrays.stream(e.getStackTrace()).sequential().forEach(line -> TelegramBridge.log.severe(line.toString()));
-            return -1;
+            return null;
         }
     }
 

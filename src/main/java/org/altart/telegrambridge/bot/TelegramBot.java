@@ -35,7 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
     public MessageListener messageListenerFeature = new MessageListener(this);
     public final SentMedia sentMediaFeature = new SentMedia(this);
-    public LinkAccount linkAccountFeature = new LinkAccount(this);
+    public AuthPlayer authPlayerFeature = new AuthPlayer(this);
 
     public TelegramBot(Plugin plugin) {
         super(TelegramBridge.config.botToken);
@@ -52,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         features.add(userAutocompleteFeature);
         features.add(messageListenerFeature);
         features.add(sentMediaFeature);
-        features.add(linkAccountFeature);
+        features.add(authPlayerFeature);
     }
 
     private void onCommand(String command_text, Message message) {

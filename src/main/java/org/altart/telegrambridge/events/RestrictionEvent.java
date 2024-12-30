@@ -1,6 +1,6 @@
 package org.altart.telegrambridge.events;
 
-import org.altart.telegrambridge.AuthManager;
+import org.altart.telegrambridge.auth.AuthManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,31 +15,35 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 
-import java.util.UUID;
-
 public class RestrictionEvent implements Listener {
-    private final AuthManager authManager;
+    @EventHandler()
+    public void onLoginJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        AuthManager.addSession(player);
+    }
 
-    public RestrictionEvent(AuthManager authManager) {
-        this.authManager = authManager;
+    @EventHandler()
+    public void onLoginQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        AuthManager.logout(player);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginDisplayCommands(PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
-        if (!authManager.isLogged(player)) {
+        if (!AuthManager.isLogged(player)) {
             event.getCommands().clear();
         }
     }
@@ -47,8 +51,7 @@ public class RestrictionEvent implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onLoginCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
-        if (!authManager.isLogged(player)) {
+        if (!AuthManager.isLogged(player)) {
             event.setCancelled(true);
         }
     }
@@ -56,7 +59,7 @@ public class RestrictionEvent implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onLoginInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (authManager.isLogged(player)) return;
+        if (AuthManager.isLogged(player)) return;
 
         event.setUseInteractedBlock(Event.Result.DENY);
         event.setUseItemInHand(Event.Result.DENY);
@@ -66,56 +69,56 @@ public class RestrictionEvent implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onLoginInteractEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginInteractEntity(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginInventorySwap(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginInventoryOpen(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginItemDamage(PlayerItemDamageEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginItemPickup(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        event.setCancelled(!authManager.isLogged(player));
+        event.setCancelled(!AuthManager.isLogged(player));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            event.setCancelled(!authManager.isLogged(player));
+            event.setCancelled(!AuthManager.isLogged(player));
         }
     }
 
@@ -123,7 +126,7 @@ public class RestrictionEvent implements Listener {
     public void onLoginDamage(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            event.setCancelled(!authManager.isLogged(player));
+            event.setCancelled(!AuthManager.isLogged(player));
         }
     }
 
@@ -131,14 +134,14 @@ public class RestrictionEvent implements Listener {
     public void onLoginDamage(EntityDamageByBlockEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            event.setCancelled(!authManager.isLogged(player));
+            event.setCancelled(!AuthManager.isLogged(player));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onLoginMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (authManager.isLogged(player)) return;
+        if (AuthManager.isLogged(player)) return;
 
         Location to = event.getTo();
         if (to == null) {

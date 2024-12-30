@@ -3,32 +3,24 @@ package org.altart.telegrambridge.events;
 
 import net.md_5.bungee.chat.TranslationRegistry;
 import org.altart.telegrambridge.TelegramBridge;
+import org.altart.telegrambridge.auth.AuthManager;
 import org.altart.telegrambridge.utils.Format;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 
 public class GameEvent implements Listener {
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
-            String playerNick = event.getPlayer().getDisplayName();
-            String message = Format.string(TelegramBridge.translations.get().join, "playername", playerNick);
-            TelegramBridge.telegramBot.broadcastMessage(message);
-            TelegramBridge.telegramBot.pinMessageFeature.addPlayer(playerNick);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) {
-        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent) {
-            String playerNick = event.getPlayer().getDisplayName();
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        if (TelegramBridge.config.sendToTelegram && TelegramBridge.config.joinAndLeaveEvent && AuthManager.isLogged(player)) {
+            String playerNick = player.getDisplayName();
             String message = Format.string(TelegramBridge.translations.get().leave, "playername", playerNick);
             TelegramBridge.telegramBot.broadcastMessage(message);
             TelegramBridge.telegramBot.pinMessageFeature.removePlayer(playerNick);

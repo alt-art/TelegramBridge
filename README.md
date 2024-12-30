@@ -21,6 +21,7 @@ telegram to minecraft and vice versa.
 | telegrambridge.commands.config                  | Allows the user to configure the TelegramBridge                           | true    |
 | telegrambridge.commands.config.default-language | Allows the user to set the language that will be used in telegram channel | op      |
 | telegrambridge.commands.config.language         | Allows the user to set your own language                                  | true    |
+| telegrambridge.commands.link                    | Allows the user to link their telegram account to their minecraft account | true    |
 
 ## Config
 

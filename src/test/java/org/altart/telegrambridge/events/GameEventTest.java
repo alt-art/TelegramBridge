@@ -2,6 +2,7 @@ package org.altart.telegrambridge.events;
 
 import org.altart.telegrambridge.StandardMockTest;
 import org.altart.telegrambridge.TelegramBridge;
+import org.altart.telegrambridge.auth.AuthManager;
 import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.bot.feature.PinMessage;
 import org.altart.telegrambridge.config.Config;
@@ -13,15 +14,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,13 +43,29 @@ class GameEventTest extends StandardMockTest {
     TelegramBot mockTelegramBot;
 
     @Mock
+    Server mockServer;
+
+    @Mock
     PinMessage mockPinMessage;
+
+    @Mock
+    BukkitScheduler mockScheduler;
 
     final GameEvent gameEvent = new GameEvent();
 
+    private void setServerMock(Server mock) {
+        try {
+            Field server = Bukkit.class.getDeclaredField("server");
+            server.setAccessible(true);
+            server.set(server, mock);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
-    @DisplayName("Test onPlayerJoin() method")
-    void onPlayerJoin() {
+    @DisplayName("Test onPlayerQuit() method")
+    void onPlayerQuit() {
         File translationsFolder = new File("src/test/resources");
         when(mockPlugin.getDataFolder()).thenReturn(translationsFolder);
 
@@ -59,79 +77,32 @@ class GameEventTest extends StandardMockTest {
         TelegramBridge.telegramBot = mockTelegramBot;
         TelegramBridge.telegramBot.pinMessageFeature = mockPinMessage;
 
-        when(mockPlayer.getDisplayName()).thenReturn("playerNick");
-
-        PlayerJoinEvent event = new PlayerJoinEvent(mockPlayer, "Player joined the game");
-        gameEvent.onPlayerJoin(event);
-
-        verify(mockTelegramBot, times(1)).broadcastMessage("Player playerNick joined the game!");
-        verify(mockPinMessage, times(1)).addPlayer("playerNick");
-        verify(mockPlayer, times(1)).getDisplayName();
-    }
-
-    @Test
-    @DisplayName("Test onPlayerJoin() method with joinAndLeaveEvent disabled")
-    void onPlayerJoinNoEvent() {
-        TelegramBridge.config = mockConfig;
-        TelegramBridge.config.sendToTelegram = true;
-        TelegramBridge.config.joinAndLeaveEvent = false;
-
-        PlayerJoinEvent event = new PlayerJoinEvent(mockPlayer, "Player joined the game");
-        gameEvent.onPlayerJoin(event);
-
-        verify(mockTelegramBot, never()).broadcastMessage(anyString());
-        verify(mockPinMessage, never()).addPlayer(anyString());
-        verify(mockPlayer, never()).getDisplayName();
-    }
-
-    @Test
-    @DisplayName("Test onPlayerJoin() method with sendToTelegram disabled")
-    void onPlayerJoinNoTelegram() {
-        TelegramBridge.config = mockConfig;
-        TelegramBridge.config.sendToTelegram = false;
-        TelegramBridge.config.joinAndLeaveEvent = true;
-
-        PlayerJoinEvent event = new PlayerJoinEvent(mockPlayer, "Player joined the game");
-        gameEvent.onPlayerJoin(event);
-
-        verify(mockTelegramBot, never()).broadcastMessage(anyString());
-        verify(mockPinMessage, never()).addPlayer(anyString());
-        verify(mockPlayer, never()).getDisplayName();
-    }
-
-    @Test
-    @DisplayName("Test onPlayerLeave() method")
-    void onPlayerLeave() {
-        File translationsFolder = new File("src/test/resources");
-        when(mockPlugin.getDataFolder()).thenReturn(translationsFolder);
-
-        TelegramBridge.config = mockConfig;
-        TelegramBridge.config.sendToTelegram = true;
-        TelegramBridge.config.joinAndLeaveEvent = true;
-        TelegramBridge.plugin = mockPlugin;
-        TelegramBridge.translations = new Translations(null);
-        TelegramBridge.telegramBot = mockTelegramBot;
-        TelegramBridge.telegramBot.pinMessageFeature = mockPinMessage;
+        setServerMock(mockServer);
+        when(mockServer.getScheduler()).thenReturn(mockScheduler);
 
         when(mockPlayer.getDisplayName()).thenReturn("playerNick");
+        AuthManager authPlayer = new AuthManager(mockPlayer);
+        authPlayer.login();
+        AuthManager.AUTHS.put(mockPlayer.getUniqueId(), authPlayer);
 
         PlayerQuitEvent leaveEvent = new PlayerQuitEvent(mockPlayer, "Player left the game");
-        gameEvent.onPlayerLeave(leaveEvent);
+        gameEvent.onPlayerQuit(leaveEvent);
 
         verify(mockTelegramBot, times(1)).broadcastMessage("Player playerNick left the game!");
         verify(mockPinMessage, times(1)).removePlayer("playerNick");
-        verify(mockPlayer, times(1)).getDisplayName();
+        verify(mockPlayer, times(2)).getDisplayName();
     }
 
     @Test
     @DisplayName("Test onPlayerLeave() method with joinAndLeaveEvent disabled")
-    void onPlayerLeaveNoEvent() {
+    void onPlayerQuitNoEvent() {
         TelegramBridge.config = mockConfig;
         TelegramBridge.config.sendToTelegram = true;
         TelegramBridge.config.joinAndLeaveEvent = false;
 
+
         PlayerQuitEvent leaveEvent = new PlayerQuitEvent(mockPlayer, "Player left the game");
-        gameEvent.onPlayerLeave(leaveEvent);
+        gameEvent.onPlayerQuit(leaveEvent);
 
         verify(mockTelegramBot, never()).broadcastMessage(anyString());
         verify(mockPinMessage, never()).removePlayer(anyString());
@@ -140,13 +111,13 @@ class GameEventTest extends StandardMockTest {
 
     @Test
     @DisplayName("Test onPlayerLeave() method with sendToTelegram disabled")
-    void onPlayerLeaveNoTelegram() {
+    void onPlayerQuitNoTelegram() {
         TelegramBridge.config = mockConfig;
         TelegramBridge.config.sendToTelegram = false;
         TelegramBridge.config.joinAndLeaveEvent = true;
 
         PlayerQuitEvent leaveEvent = new PlayerQuitEvent(mockPlayer, "Player left the game");
-        gameEvent.onPlayerLeave(leaveEvent);
+        gameEvent.onPlayerQuit(leaveEvent);
 
         verify(mockTelegramBot, never()).broadcastMessage(anyString());
         verify(mockPinMessage, never()).removePlayer(anyString());

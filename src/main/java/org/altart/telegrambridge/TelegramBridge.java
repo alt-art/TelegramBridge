@@ -1,5 +1,6 @@
 package org.altart.telegrambridge;
 
+import org.altart.telegrambridge.auth.AuthManager;
 import org.altart.telegrambridge.bot.TelegramBot;
 import org.altart.telegrambridge.commands.*;
 import org.altart.telegrambridge.config.Config;
@@ -7,12 +8,15 @@ import org.altart.telegrambridge.config.Translations;
 import org.altart.telegrambridge.database.SQLite;
 import org.altart.telegrambridge.events.ChatEvent;
 import org.altart.telegrambridge.events.GameEvent;
+import org.altart.telegrambridge.events.RestrictionEvent;
 import org.altart.telegrambridge.utils.Format;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -44,6 +48,11 @@ public final class TelegramBridge extends JavaPlugin {
             return;
         }
 
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            AuthManager.checkExpired();
+            AuthManager.loginTitle();
+        }, 0L, 20L);
+
         try {
             telegramBot = new TelegramBot(plugin);
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
@@ -55,6 +64,8 @@ public final class TelegramBridge extends JavaPlugin {
 
             Bukkit.getPluginManager().registerEvents(new ChatEvent(), plugin);
             Bukkit.getPluginManager().registerEvents(new GameEvent(), plugin);
+            Bukkit.getPluginManager().registerEvents(new RestrictionEvent(), plugin);
+
             try {
                 Objects.requireNonNull(getCommand("tbreload")).setExecutor(new ReloadCommand());
                 PluginCommand replyCommand = Objects.requireNonNull(getCommand("tbreply"));
@@ -66,6 +77,7 @@ public final class TelegramBridge extends JavaPlugin {
                 PluginCommand configCommand = Objects.requireNonNull(getCommand("tbconfig"));
                 configCommand.setExecutor(new ConfigCommand());
                 configCommand.setTabCompleter(new ConfigTabCompletion());
+                Objects.requireNonNull(getCommand("tblink")).setExecutor(new LinkCommand());
             } catch (NullPointerException e) {
                 log.severe("Error registering command: " + e.getMessage());
                 Arrays.stream(e.getStackTrace()).forEach(line -> TelegramBridge.log.severe(line.toString()));

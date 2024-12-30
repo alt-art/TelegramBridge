@@ -1,12 +1,9 @@
 package org.altart.telegrambridge.bot;
 
+import org.altart.telegrambridge.bot.feature.*;
 import org.altart.telegrambridge.config.Config;
 import org.altart.telegrambridge.TelegramBridge;
 import org.altart.telegrambridge.bot.commands.*;
-import org.altart.telegrambridge.bot.feature.MessageListener;
-import org.altart.telegrambridge.bot.feature.PinMessage;
-import org.altart.telegrambridge.bot.feature.SentMedia;
-import org.altart.telegrambridge.bot.feature.UserAutocomplete;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public UserAutocomplete userAutocompleteFeature = new UserAutocomplete(this);
     public MessageListener messageListenerFeature = new MessageListener(this);
     public final SentMedia sentMediaFeature = new SentMedia(this);
+    public AuthPlayer authPlayerFeature = new AuthPlayer(this);
 
     public TelegramBot(Plugin plugin) {
         super(TelegramBridge.config.botToken);
@@ -54,6 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         features.add(userAutocompleteFeature);
         features.add(messageListenerFeature);
         features.add(sentMediaFeature);
+        features.add(authPlayerFeature);
     }
 
     private void onCommand(String command_text, Message message) {
